@@ -1,5 +1,5 @@
 #####################################################################
-# Dockerfile to build container images for ngsFetch
+# Dockerfile to build container images for SnakeNgs
 # Based on python 3.11-buster
 #####################################################################
 

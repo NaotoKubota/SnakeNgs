@@ -13,7 +13,7 @@
     - [HITSCLIP](tutorial/HITSCLIP.md)
 - Usage
     - Fetching
-        - [ZhengLab_Fetch.bash](usage/ZhengLab_Fetch.md)
+        - [ngsFetch](usage/ngsFetch.md)
     - RNA-seq
         - [preprocessing_RNAseq.smk](usage/preprocessing_RNAseq.md)
         - [preprocessing_RNAseq_single.smk](usage/preprocessing_RNAseq_single.md)
