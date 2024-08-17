@@ -5,7 +5,7 @@ Fetching NGS data from the public server using [ffq](https://github.com/pachterl
 ## Usage
 
 ``` bash
-$ docker run --rm naotokubota/ngsFetch:latest ngsFetch -h
+$ docker run --rm naotokubota/ngsfetch:latest ngsFetch -h
 
                        ____        __           __         
                       /\  _`\     /\ \__       /\ \        
@@ -41,4 +41,4 @@ Please refer to the [tutorial](../tutorial/Fetching.md) for more information.
 
 ## Docker image
 
-- [naotokubota/ngsFetch](https://hub.docker.com/r/naotokubota/ngsFetch)
+- [naotokubota/ngsfetch](https://hub.docker.com/r/naotokubota/ngsfetch)
