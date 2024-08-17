@@ -19,7 +19,7 @@ RUN mkdir /src
 # git clone ZhengLab RNA-seq pipeline
 RUN git clone https://github.com/NaotoKubota/SnakeNgs.git -b v0.1.1 && \
 	mv SnakeNgs /src/SnakeNgs && \
-	chmod a+x /src/SnakeNgs/*.bash
+	chmod a+x /src/SnakeNgs/ngsFetch
 
 # Set PATH
 ENV PATH $PATH:/src:/src/SnakeNgs
