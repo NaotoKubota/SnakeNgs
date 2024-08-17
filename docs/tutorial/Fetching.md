@@ -4,11 +4,11 @@ Let's say you want to fetch the data from the public server ([GEO](https://www.n
 
 ``` bash
 # Docker
-docker run --rm -v $(PWD):$(PWD) naotokubota/ngsfetch:latest \
+docker run --rm -v $(PWD):$(PWD) naotokubota/snakengs:latest \
 ngsFetch -i GSE52856 -o $(PWD)/GSE52856
 
 # Singularity
-singularity exec docker://naotokubota/ngsfetch:latest \
+singularity exec docker://naotokubota/snakengs:latest \
 ngsFetch -i GSE52856 -o ./GSE52856
 ```
 
