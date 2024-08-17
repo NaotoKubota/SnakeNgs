@@ -17,7 +17,7 @@ RUN apt-get -qq update && \
 RUN mkdir /src
 
 # git clone ZhengLab RNA-seq pipeline
-RUN git clone https://github.com/NaotoKubota/SnakeNgs.git -b v0.1.2 && \
+RUN git clone https://github.com/NaotoKubota/SnakeNgs.git -b v0.1.3 && \
 	mv SnakeNgs /src/SnakeNgs && \
 	chmod a+x /src/SnakeNgs/ngsFetch
 
