@@ -1,4 +1,4 @@
-# SnakeNgs
+# SnakeNgs (v0.0.0)
 
 Pipelines for NGS data analysis written in [Snakemake](https://snakemake.readthedocs.io/en/stable/). Each pipeline is designed to be executed with [Singularity](https://sylabs.io/singularity/) containers.
 
