@@ -1,0 +1,117 @@
+site_name: SnakeNgs
+site_description: Snakemake Pipeline for NGS data
+site_author: Naoto Kubota
+site_url: https://naotokubota/SnakeNgs
+copyright: © 2024 Naoto Kubota
+repo_url: https://github.com/NaotoKubota/SnakeNgs
+repo_name: NaotoKubota/SnakeNgs
+
+theme:
+  name: material
+  palette:
+    # Palette toggle for automatic mode
+    - media: "(prefers-color-scheme)"
+      primary: amber
+      accent: amber
+      toggle:
+        icon: material/brightness-auto
+        name: Switch to light mode
+    # Palette toggle for light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: amber
+      accent: amber
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    # Palette toggle for dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: amber
+      accent: amber
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  font:
+    text: Roboto
+  language: en
+  features:
+    - search.suggest
+    - search.highlight
+    - navigation.instant
+    - navigation.instant.progress
+    - navigation.instant.prefetch
+    - navigation.tracking
+    - navigation.footer
+    - content.code.copy
+    - content.code.select
+    - content.code.annotate
+
+markdown_extensions:
+  - toc:
+      permalink: true
+  - admonition
+  - codehilite
+  - extra
+  - pymdownx.highlight:
+      linenums: true
+      linenums_style: pymdownx.inline
+  - pymdownx.inlinehilite
+  - pymdownx.superfences
+  - pymdownx.betterem:
+      smart_enable: all
+  - attr_list
+  - md_in_html
+
+extra:
+  social:
+    - type: "github"
+      icon: fontawesome/brands/github
+      link: "https://github.com/NaotoKubota"
+    - type: "docker"
+      icon: fontawesome/brands/docker
+      link: "https://hub.docker.com/u/naotokubota"
+    - type: "twitter"
+      icon: fontawesome/brands/x-twitter
+      link: "https://twitter.com/naoto_kubota"
+
+edit_uri: edit/main/docs/
+
+nav:
+- Home: index.md
+- Installation: installation.md
+- Tutorial:
+  - Fetching public NGS data: tutorial/Fetching.md
+  - QC and mapping for RNA-seq: tutorial/RNAseq_preprocessing.md
+  - UMI count from single-nucleus RNA-seq: tutorial/snRNAseq_count.md
+  - QC and mapping for ChIP-seq/ATAC-seq: tutorial/ChIP-ATAC_preprocessing.md
+  - Peak calling for ChIP-seq/ATAC-seq: tutorial/ChIP-ATAC_callpeak.md
+  - Differential analysis for ATAC-seq: tutorial/ATACseq_diff.md
+  - Footprinting for ATAC-seq: tutorial/ATACseq_footprinting.md
+  - QC and mapping for iCLIP-seq/HITSCLIP: tutorial/CLIP_preprocessing.md
+- Usage:
+  - Fetching:
+    - ngsFetch: usage/ngsFetch.md
+  - RNA-seq:
+    - preprocessing_RNAseq.smk: usage/preprocessing_RNAseq.md
+    - preprocessing_RNAseq_single.smk: usage/preprocessing_RNAseq_single.md
+    - rMATS.smk: usage/rMATS.md
+    - SUPPA2_diffSplice.smk: usage/SUPPA2_diffSplice.md
+    - Whippet.smk: usage/Whippet.md
+    - MAJIQ.smk: usage/MAJIQ.md
+    - LeafCutter.smk: usage/LeafCutter.md
+  - snRNA-seq:
+    - kb-nac.smk: usage/kb-nac.md
+  - ChIP-seq:
+    - preprocessing_ChIPseq.smk: usage/preprocessing_ChIPseq.md
+    - preprocessing_ChIPseq_single.smk: usage/preprocessing_ChIPseq_single.md
+    - callpeak_ChIPseq.smk: usage/callpeak_ChIPseq.md
+  - ATAC-seq:
+    - callpeak_ATACseq.smk: usage/callpeak_ATACseq.md
+    - differential_ATACseq.smk: usage/differential_ATACseq.md
+    - footprinting_ATACseq.smk: usage/footprinting_ATACseq.md
+  - iCLIP-seq & HITSCLIP:
+    - preprocessing_iCLIPseq.smk: usage/preprocessing_iCLIPseq.md
+    - preprocessing_HITSCLIP.smk: usage/preprocessing_HITSCLIP.md
+  - File format conversion:
+    - bam2cram.smk: usage/bam2cram.md
