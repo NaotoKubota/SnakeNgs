@@ -10,6 +10,28 @@
 
 Pipelines for NGS data analysis written in [Snakemake](https://snakemake.readthedocs.io/en/stable/). Each pipeline is designed to be executed with [Singularity](https://sylabs.io/singularity/) containers.
 
+## Usage
+
+1. Make sure you have [Singularity](https://sylabs.io/singularity/) and [Snakemake](https://snakemake.readthedocs.io/en/stable/) installed.
+
+2. Clone the repository.
+
+``` bash
+git clone https://github.com/NaotoKubota/SnakeNgs.git
+```
+
+3. Run the pipeline of your choice (e.g., `preprocessing_RNAseq.smk`).
+
+``` bash
+snakemake -s /path/to/SnakeNgs/snakefile/preprocessing_RNAseq.smk \
+--configfile <path to config.yaml> \
+--cores <int> \
+--use-singularity \
+--rerun-incomplete
+```
+
+That's it! You can find the detailed usage of each pipeline in the [documentation](https://naotokubota.github.io/SnakeNgs/).
+
 ## Workflow
 
 - Fetching
