@@ -7,12 +7,12 @@ Pipelines for NGS data analysis written in [Snakemake](https://snakemake.readthe
 - [Installation](installation.md)
 - Tutorial
     - [Fetching public NGS data](tutorial/Fetching.md)
-    <!-- - [RNA-seq](tutorial/RNAseq.md)
-    - [snRNA-seq](tutorial/snRNAseq.md)
-    - [ChIP-seq](tutorial/ChIPseq.md)
-    - [ATAC-seq](tutorial/ATACseq.md)
-    - [iCLIP-seq](tutorial/iCLIPseq.md)
-    - [HITSCLIP](tutorial/HITSCLIP.md) -->
+    <!-- - [QC and mapping for RNA-seq](tutorial/RNAseq_preprocessing.md)
+    - [UMI count from single-nucleus RNA-seq](tutorial/snRNAseq_count.md)
+    - [QC and mapping for ChIP-seq/ATAC-seq](tutorial/ChIP-ATAC_preprocessing.md)
+    - [Peak calling for ChIP-seq/ATAC-seq](tutorial/ChIP-ATAC_callpeak.md)
+    - [Differential analysis for ATAC-seq](tutorial/ATACseq_diff.md)
+    - [Footprinting for ATAC-seq](tutorial/ATACseq_footprinting.md)
 - Usage
     - Fetching
         - [ngsFetch](usage/ngsFetch.md)

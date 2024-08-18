@@ -88,7 +88,6 @@ nav:
   # - Peak calling for ChIP-seq/ATAC-seq: tutorial/ChIP-ATAC_callpeak.md
   # - Differential analysis for ATAC-seq: tutorial/ATACseq_diff.md
   # - Footprinting for ATAC-seq: tutorial/ATACseq_footprinting.md
-  # - QC and mapping for iCLIP-seq/HITSCLIP: tutorial/CLIP_preprocessing.md
 - Usage:
   - Fetching:
     - ngsFetch: usage/ngsFetch.md
