@@ -2,6 +2,18 @@
 
 All notable changes to this SnakeNgs project will be documented in this file.
 
+## [v0.1.4] - 2024-08-17
+
+### Added
+
+### Changed
+
+- Update README.md.
+
+### Fixed
+
+- Fix documentation.
+
 ## [v0.1.3] - 2024-08-17
 
 ### Added
