@@ -1,4 +1,5 @@
 [![GitHub License](https://img.shields.io/github/license/NaotoKubota/SnakeNgs)](https://github.com/NaotoKubota/SnakeNgs/blob/main/LICENSE)
+[![DOI](https://zenodo.org/badge/843927384.svg)](https://zenodo.org/doi/10.5281/zenodo.13337082)
 [![GitHub Release](https://img.shields.io/github/v/release/NaotoKubota/SnakeNgs?style=flat)](https://github.com/NaotoKubota/SnakeNgs/releases)
 [![GitHub Release Date](https://img.shields.io/github/release-date/NaotoKubota/SnakeNgs)](https://github.com/NaotoKubota/SnakeNgs/releases)
 [![Create Release and Build Docker Image](https://github.com/NaotoKubota/SnakeNgs/actions/workflows/release-docker-build-push.yaml/badge.svg)](https://github.com/NaotoKubota/SnakeNgs/actions/workflows/release-docker-build-push.yaml)
