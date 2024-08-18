@@ -5,7 +5,7 @@
 [![Docker Pulls](https://img.shields.io/docker/pulls/naotokubota/snakengs)](https://hub.docker.com/r/naotokubota/snakengs)
 [![Docker Image Size](https://img.shields.io/docker/image-size/naotokubota/snakengs)](https://hub.docker.com/r/naotokubota/snakengs)
 
-# SnakeNgs (v0.1.3)
+# SnakeNgs (v0.1.4)
 
 Pipelines for NGS data analysis written in [Snakemake](https://snakemake.readthedocs.io/en/stable/). Each pipeline is designed to be executed with [Singularity](https://sylabs.io/singularity/) containers.
 
