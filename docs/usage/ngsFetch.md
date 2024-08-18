@@ -20,7 +20,7 @@ $ docker run --rm naotokubota/snakengs:latest ngsFetch -h
 Version: v0.1
 
 
-ngsFetch v0.1 -Pipeline for fetching NGS data in ZhengLab-
+ngsFetch v0.1 -Pipeline for fetching NGS data-
 
 Usage: ngsFetch -i ID -o output_dir
 
@@ -41,4 +41,4 @@ Please refer to the [tutorial](../tutorial/Fetching.md) for more information.
 
 ## Docker image
 
-- [naotokubota/ngsfetch](https://hub.docker.com/r/naotokubota/ngsfetch)
+- [naotokubota/snakengs](https://hub.docker.com/r/naotokubota/snakengs)
