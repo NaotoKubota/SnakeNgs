@@ -1,3 +1,5 @@
+# SnakeNgs (v0.1.4)
+
 [![GitHub License](https://img.shields.io/github/license/NaotoKubota/SnakeNgs)](https://github.com/NaotoKubota/SnakeNgs/blob/main/LICENSE)
 [![DOI](https://zenodo.org/badge/843927384.svg)](https://zenodo.org/doi/10.5281/zenodo.13337082)
 [![GitHub Release](https://img.shields.io/github/v/release/NaotoKubota/SnakeNgs?style=flat)](https://github.com/NaotoKubota/SnakeNgs/releases)
@@ -6,13 +8,9 @@
 [![Docker Pulls](https://img.shields.io/docker/pulls/naotokubota/snakengs)](https://hub.docker.com/r/naotokubota/snakengs)
 [![Docker Image Size](https://img.shields.io/docker/image-size/naotokubota/snakengs)](https://hub.docker.com/r/naotokubota/snakengs)
 
-# SnakeNgs (v0.1.4)
-
 Pipelines for NGS data analysis written in [Snakemake](https://snakemake.readthedocs.io/en/stable/). Each pipeline is designed to be executed with [Singularity](https://sylabs.io/singularity/) containers.
 
-Please refer to the [documentation](https://naotokubota.github.io/SnakeNgs/) for more information.
-
-## Contents
+## Workflow
 
 - Fetching
 	- [ngsFetch](https://naotokubota.github.io/SnakeNgs/usage/ngsFetch/)
@@ -39,3 +37,7 @@ Please refer to the [documentation](https://naotokubota.github.io/SnakeNgs/) for
 	- [preprocessing_HITSCLIP.smk](https://naotokubota.github.io/SnakeNgs/usage/preprocessing_HITSCLIP)
 - File format conversion
 	- [bam2cram.smk](https://naotokubota.github.io/SnakeNgs/usage/bam2cram)
+
+## Documentation
+
+You can learn how to use each pipeline by visiting the [documentation](https://naotokubota.github.io/SnakeNgs/).
