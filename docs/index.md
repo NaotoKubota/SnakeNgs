@@ -1,16 +1,18 @@
 # SnakeNgs documentation
 
+Pipelines for NGS data analysis written in [Snakemake](https://snakemake.readthedocs.io/en/stable/). Each pipeline is designed to be executed with [Singularity](https://sylabs.io/singularity/) containers.
+
 ## Contents
 
 - [Installation](installation.md)
 - Tutorial
     - [Fetching public NGS data](tutorial/Fetching.md)
-    - [RNA-seq](tutorial/RNAseq.md)
+    <!-- - [RNA-seq](tutorial/RNAseq.md)
     - [snRNA-seq](tutorial/snRNAseq.md)
     - [ChIP-seq](tutorial/ChIPseq.md)
     - [ATAC-seq](tutorial/ATACseq.md)
     - [iCLIP-seq](tutorial/iCLIPseq.md)
-    - [HITSCLIP](tutorial/HITSCLIP.md)
+    - [HITSCLIP](tutorial/HITSCLIP.md) -->
 - Usage
     - Fetching
         - [ngsFetch](usage/ngsFetch.md)
