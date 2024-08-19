@@ -21,7 +21,7 @@ Snakemake workflow for differential RNA splicing analysis using [rMATS](http://r
 
 ``` bash
 snakemake -s /path/to/SnakeNgs/snakefile/rMATS.smk \
---configfile <path to config.yaml> \
+--configfile /path/to/config.yaml \
 --cores <int> \
 --use-singularity \
 --rerun-incomplete

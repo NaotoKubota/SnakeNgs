@@ -26,7 +26,7 @@ Snakemake workflow for preprocessing **paired**-end ChIP-seq/ATAC-seq data.
 
 ``` bash
 snakemake -s /path/to/SnakeNgs/snakefile/preprocessing_ChIPseq.smk \
---configfile <path to config.yaml> \
+--configfile /path/to/config.yaml \
 --cores <int> \
 --use-singularity \
 --rerun-incomplete

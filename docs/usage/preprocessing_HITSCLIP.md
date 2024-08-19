@@ -25,7 +25,7 @@ Snakemake workflow for preprocessing HITSCLIP data.
 
 ``` bash
 snakemake -s /path/to/SnakeNgs/snakefile/preprocessing_HITSCLIP.smk \
---configfile <path to config.yaml> \
+--configfile /path/to/config.yaml \
 --cores <int> \
 --use-singularity \
 --rerun-incomplete

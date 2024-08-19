@@ -22,7 +22,7 @@ Snakemake workflow for peak calling of ATAC-seq data.
 
 ``` bash
 snakemake -s /path/to/SnakeNgs/snakefile/callpeak_ATACseq.smk \
---configfile <path to config.yaml> \
+--configfile /path/to/config.yaml \
 --cores <int> \
 --use-singularity \
 --rerun-incomplete

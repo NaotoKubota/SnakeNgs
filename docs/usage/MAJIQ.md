@@ -24,7 +24,7 @@ Snakemake workflow for differential RNA splicing analysis using [MAJIQ](https://
 
 ``` bash
 snakemake -s /path/to/SnakeNgs/snakefile/MAJIQ.smk \
---configfile <path to config.yaml> \
+--configfile /path/to/config.yaml \
 --cores <int> \
 --use-singularity \
 --rerun-incomplete

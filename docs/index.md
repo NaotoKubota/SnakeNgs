@@ -14,8 +14,8 @@ git clone https://github.com/NaotoKubota/SnakeNgs.git
 
 # Run the pipeline
 snakemake -s /path/to/SnakeNgs/snakefile/preprocessing_RNAseq.smk \
---configfile <path to config.yaml> \
---cores <int> \
+--configfile path/to/config.yaml \
+--cores 16 \
 --use-singularity \
 --rerun-incomplete
 ```

@@ -24,7 +24,7 @@ Snakemake workflow for preprocessing **paired**-end bulk RNA-seq data.
 
 ``` bash
 snakemake -s /path/to/SnakeNgs/snakefile/preprocessing_RNAseq.smk \
---configfile <path to config.yaml> \
+--configfile /path/to/config.yaml \
 --cores <int> \
 --use-singularity \
 --rerun-incomplete

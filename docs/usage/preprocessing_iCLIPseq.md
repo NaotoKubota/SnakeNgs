@@ -25,7 +25,7 @@ Snakemake workflow for preprocessing iCLIP-seq data.
 
 ``` bash
 snakemake -s /path/to/SnakeNgs/snakefile/preprocessing_iCLIPseq.smk \
---configfile <path to config.yaml> \
+--configfile /path/to/config.yaml \
 --cores <int> \
 --use-singularity \
 --rerun-incomplete

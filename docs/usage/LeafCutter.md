@@ -27,7 +27,7 @@ Snakemake workflow for differential RNA splicing analysis using [LeafCutter](htt
 
 ``` bash
 snakemake -s /path/to/SnakeNgs/snakefile/LeafCutter.smk \
---configfile <path to config.yaml> \
+--configfile /path/to/config.yaml \
 --cores <int> \
 --use-singularity \
 --rerun-incomplete

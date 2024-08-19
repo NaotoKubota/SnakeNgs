@@ -26,7 +26,7 @@ Snakemake workflow for differential RNA splicing analysis using [SUPPA2](https:/
 
 ``` bash
 snakemake -s /path/to/SnakeNgs/snakefile/SUPPA2_diffSplice.smk \
---configfile <path to config.yaml> \
+--configfile /path/to/config.yaml \
 --cores <int> \
 --use-singularity \
 --rerun-incomplete
