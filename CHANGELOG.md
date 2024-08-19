@@ -2,6 +2,16 @@
 
 All notable changes to this SnakeNgs project will be documented in this file.
 
+## [v0.2.0] - 2024-??-??
+
+### Added
+
+### Changed
+
+- `MAJIQ.smk`: Use local singularity image for MAJIQ as there is no public image available.
+
+### Fixed
+
 ## [v0.1.4] - 2024-08-17
 
 ### Added

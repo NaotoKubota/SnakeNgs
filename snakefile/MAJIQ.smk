@@ -80,7 +80,7 @@ rule convert_experiment_table_to_setting_file:
 
 rule build:
     container:
-        "/rhome/naotok/bigdata/singularity/majiq_0.1.sif"
+        config["container"]
     input:
         setting_file = "setting_file.ini",
         gff = config["gff"]
@@ -106,7 +106,7 @@ rule build:
 
 rule heterogen:
     container:
-        "/rhome/naotok/bigdata/singularity/majiq_0.1.sif"
+        config["container"]
     input:
         majiq_ref = expand("build/{sample_ref}.majiq", sample_ref = samples_Ref),
         majiq_alt = expand("build/{sample_alt}.majiq", sample_alt = samples_Alt)
@@ -134,7 +134,7 @@ rule heterogen:
 
 rule voila_tsv:
     container:
-        "/rhome/naotok/bigdata/singularity/majiq_0.1.sif"
+        config["container"]
     input:
         voila = "heterogen/Alt-Ref.het.voila",
         splicegraph = "build/splicegraph.sql"
@@ -158,7 +158,7 @@ rule voila_tsv:
 
 rule voila_modulize:
     container:
-        "/rhome/naotok/bigdata/singularity/majiq_0.1.sif"
+        config["container"]
     input:
         splicegraph = "build/splicegraph.sql",
         voila = "heterogen/Alt-Ref.het.voila"

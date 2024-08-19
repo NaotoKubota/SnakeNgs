@@ -34,6 +34,7 @@ snakemake -s /path/to/SnakeNgs/snakefile/MAJIQ.smk \
 
 ``` yaml
 workdir: /path/to/output
+container: /path/to/singularity_image
 experiment_table: /path/to/experiment_table.tsv
 gff: /path/to/reference_transcriptome.gff3
 genome: hg19 # hg19, hg38, mm10, mm39, etc.
@@ -41,6 +42,12 @@ strandness: None # [None, forward, reverse]
 ```
 
 - `/path/to/output` is the directory where the output files will be saved.
+- `/path/to/singularity_image` is the path to the Singularity image file for MAJIQ.
+
+!!! note
+
+	As of now, there is no public Docker/Singularity image available for MAJIQ. You need to build the image by yourself. Please refer to the [MAJIQ installation guide](https://majiq.biociphers.org/app_download/) for more information.
+
 - `/path/to/experiment_table.tsv` is a tab-separated file, which is same as the one used in [Shiba](https://github.com/NaotoKubota/Shiba).
 
 ``` text
