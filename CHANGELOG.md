@@ -9,6 +9,7 @@ All notable changes to this SnakeNgs project will be documented in this file.
 ### Changed
 
 - `MAJIQ.smk`: Use local singularity image for MAJIQ as there is no public image available.
+- `Whippet.smk`: Use single thread to allow parallel execution of the `quant` rule.
 
 ### Fixed
 
