@@ -11,6 +11,7 @@ Usage:
 workdir: config["workdir"]
 star_index = config["star_index"]
 samples = config["samples"]
+gtf = config["gtf"]
 
 rule all:
     input:
@@ -110,8 +111,6 @@ rule makeRefFlat:
         "docker://quay.io/biocontainers/ucsc-gtftogenepred:469--h9b8f530_0"
     output:
         refFlat = "refFlat.txt"
-    params:
-        gtf = config["gtf"]
     threads:
         1
     benchmark:
@@ -119,8 +118,21 @@ rule makeRefFlat:
     log:
         "log/refFlat.log"
     shell:
-        "gtfToGenePred -genePredExt -geneNameAsName2 {params.gtf} refFlat.tmp >& {log} && "
+        "gtfToGenePred -genePredExt -geneNameAsName2 {gtf} refFlat.tmp >& {log} && "
         "cat refFlat.tmp | awk -F'\t' -v OFS='\t' '{{print $12,$1,$2,$3,$4,$5,$6,$7,$8,$9,$10}}' > {output.refFlat}"
+
+rule makeRibosomalInterval:
+    output:
+        ribosomalInterval = "ribosomal_interval.txt"
+    threads:
+        1
+    benchmark:
+        "benchmark/ribosomal_interval.txt"
+    shell:
+        '''
+        cat {star_index}/chrNameLength.txt | awk -F"\t" -v OFS="\t" '{{print "@SQ","SN:"$1,"LN:"$2}}' > {output.ribosomalInterval} && \
+        cat {gtf} | grep -e 'gene_type "rRNA"' -e 'gene_biotype "rRNA"' | awk -F"\t" -v OFS="\t" '$3 == "transcript"{{print $1,$4-1,$5,$7,$9}}' >> {output.ribosomalInterval}
+        '''
 
 rule CollectRnaSeqMetrics:
     wildcard_constraints:
@@ -129,7 +141,8 @@ rule CollectRnaSeqMetrics:
         "docker://quay.io/biocontainers/picard:3.1.1--hdfd78af_0"
     input:
         bam = "star/{sample}/{sample}_Aligned.out.bam",
-        refFlat = "refFlat.txt"
+        refFlat = "refFlat.txt",
+        ribosomalInterval = "ribosomal_interval.txt"
     output:
         RnaSeqMetrics = "metrics/{sample}.picard.analysis.CollectRnaSeqMetrics"
     threads:
@@ -139,7 +152,7 @@ rule CollectRnaSeqMetrics:
     log:
         "log/picard_CollectRnaSeqMetrics_{sample}.log"
     shell:
-        "picard CollectRnaSeqMetrics -I {input.bam} -O {output.RnaSeqMetrics} --REF_FLAT {input.refFlat} --STRAND_SPECIFICITY NONE >& {log}"
+        "picard CollectRnaSeqMetrics -I {input.bam} -O {output.RnaSeqMetrics} --REF_FLAT {input.refFlat} --STRAND_SPECIFICITY NONE --RIBOSOMAL_INTERVALS {input.ribosomalInterval} >& {log}"
 
 rule multiqc:
     container:
