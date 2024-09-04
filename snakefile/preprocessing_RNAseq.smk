@@ -18,7 +18,8 @@ rule all:
         multiqc = "multiqc/multiqc_report.html",
         bam = expand("star/{sample}/{sample}_Aligned.out.bam", sample = samples),
         bigwig = expand("bigwig/{sample}.bw", sample = samples),
-        RnaSeqMetrics = expand("metrics/{sample}.picard.analysis.CollectRnaSeqMetrics", sample = samples)
+        RnaSeqMetrics = expand("metrics/{sample}.picard.analysis.CollectRnaSeqMetrics", sample = samples),
+        InsertSizeMetrics = expand("metrics/{sample}.picard.analysis.CollectInsertSizeMetrics", sample = samples)
 
 rule qc:
     wildcard_constraints:
@@ -157,13 +158,33 @@ rule CollectRnaSeqMetrics:
     shell:
         "picard CollectRnaSeqMetrics -I {input.bam} -O {output.RnaSeqMetrics} --REF_FLAT {input.refFlat} --STRAND_SPECIFICITY NONE --RIBOSOMAL_INTERVALS {input.ribosomalInterval} >& {log}"
 
+rule CollectInsertSizeMetrics:
+    wildcard_constraints:
+        sample = "|".join([re.escape(x) for x in samples])
+    container:
+        "docker://quay.io/biocontainers/picard:3.1.1--hdfd78af_0"
+    input:
+        bam = "star/{sample}/{sample}_Aligned.out.bam"
+    output:
+        InsertSizeMetrics = "metrics/{sample}.picard.analysis.CollectInsertSizeMetrics",
+        InsertSizeMetrics_pdf = "metrics/{sample}.picard.analysis.CollectInsertSizeMetrics.pdf"
+    threads:
+        1
+    benchmark:
+        "benchmark/picard_CollectInsertSizeMetrics_{sample}.txt"
+    log:
+        "log/picard_CollectInsertSizeMetrics_{sample}.log"
+    shell:
+        "picard CollectInsertSizeMetrics -I {input.bam} -O {output.InsertSizeMetrics} --Histogram_FILE {output.InsertSizeMetrics_pdf} >& {log}"
+
 rule multiqc:
     container:
         "docker://multiqc/multiqc:latest"
     input:
         json = expand("fastp/log/{sample}_fastp.json", sample = samples),
         starlog = expand("star/{sample}/{sample}_Log.final.out", sample = samples),
-        RnaSeqMetrics = expand("metrics/{sample}.picard.analysis.CollectRnaSeqMetrics", sample = samples)
+        RnaSeqMetrics = expand("metrics/{sample}.picard.analysis.CollectRnaSeqMetrics", sample = samples),
+        InsertSizeMetrics = expand("metrics/{sample}.picard.analysis.CollectInsertSizeMetrics", sample = samples)
     output:
         "multiqc/multiqc_report.html"
     benchmark:
@@ -173,7 +194,7 @@ rule multiqc:
     shell:
         "rm -rf multiqc && "
         "mkdir -p multiqc/log && "
-        "cp {input.json} {input.starlog} {input.RnaSeqMetrics} multiqc/log && "
+        "cp {input.json} {input.starlog} {input.RnaSeqMetrics} {input.InsertSizeMetrics} multiqc/log && "
         "multiqc -o multiqc/ multiqc/log >& {log} && "
         "rm -rf multiqc/log"
 
