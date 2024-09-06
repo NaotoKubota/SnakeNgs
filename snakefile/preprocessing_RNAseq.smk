@@ -114,7 +114,7 @@ rule makeRefFlat:
     container:
         "docker://quay.io/biocontainers/ucsc-gtftogenepred:469--h9b8f530_0"
     output:
-        refFlat = "refFlat.txt"
+        refFlat = "metrics/refFlat.txt"
     threads:
         1
     benchmark:
@@ -123,11 +123,12 @@ rule makeRefFlat:
         "log/refFlat.log"
     shell:
         "gtfToGenePred -genePredExt -geneNameAsName2 {gtf} refFlat.tmp >& {log} && "
-        "cat refFlat.tmp | awk -F'\t' -v OFS='\t' '{{print $12,$1,$2,$3,$4,$5,$6,$7,$8,$9,$10}}' > {output.refFlat}"
+        "cat refFlat.tmp | awk -F'\t' -v OFS='\t' '{{print $12,$1,$2,$3,$4,$5,$6,$7,$8,$9,$10}}' > {output.refFlat} && "
+        "rm -rf refFlat.tmp"
 
 rule makeRibosomalInterval:
     output:
-        ribosomalInterval = "ribosomal_interval.txt"
+        ribosomalInterval = "metrics/ribosomal_interval.txt"
     threads:
         1
     benchmark:
@@ -145,8 +146,8 @@ rule CollectRnaSeqMetrics:
         "docker://quay.io/biocontainers/picard:3.1.1--hdfd78af_0"
     input:
         bam = "star/{sample}/{sample}_Aligned.out.bam",
-        refFlat = "refFlat.txt",
-        ribosomalInterval = "ribosomal_interval.txt"
+        refFlat = "metrics/refFlat.txt",
+        ribosomalInterval = "metrics/ribosomal_interval.txt"
     output:
         RnaSeqMetrics = "metrics/{sample}.picard.analysis.CollectRnaSeqMetrics"
     threads:
