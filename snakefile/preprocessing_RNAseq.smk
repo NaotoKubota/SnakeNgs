@@ -32,9 +32,9 @@ rule qc:
     output:
         R1 = "fastp/{sample}_1.fastq.gz",
         R2 = "fastp/{sample}_2.fastq.gz",
-        json = "fastp/log/{sample}_fastp.json"
+        json = "fastp/log/{sample}.json"
     params:
-        html = "fastp/log/{sample}_fastp.html"
+        html = "fastp/log/{sample}.html"
     threads:
         8
     benchmark:
@@ -180,9 +180,9 @@ rule CollectInsertSizeMetrics:
 
 rule multiqc:
     container:
-        "docker://multiqc/multiqc:latest"
+        "docker://multiqc/multiqc:v1.25"
     input:
-        json = expand("fastp/log/{sample}_fastp.json", sample = samples),
+        json = expand("fastp/log/{sample}.json", sample = samples),
         starlog = expand("star/{sample}/{sample}_Log.final.out", sample = samples),
         RnaSeqMetrics = expand("metrics/{sample}.picard.analysis.CollectRnaSeqMetrics", sample = samples),
         InsertSizeMetrics = expand("metrics/{sample}.picard.analysis.CollectInsertSizeMetrics", sample = samples)
@@ -193,10 +193,13 @@ rule multiqc:
     log:
         "log/multiqc.log"
     shell:
-        "rm -rf multiqc && "
-        "mkdir -p multiqc/log && "
-        "cp {input.json} {input.starlog} {input.RnaSeqMetrics} {input.InsertSizeMetrics} multiqc/log && "
-        "multiqc -o multiqc/ multiqc/log >& {log} && "
-        "rm -rf multiqc/log"
+        """
+        rm -rf multiqc && \
+        mkdir -p multiqc/log && \
+        cp {input.json} {input.starlog} {input.RnaSeqMetrics} {input.InsertSizeMetrics} multiqc/log && \
+        cat /usr/local/lib/python3.12/site-packages/multiqc/config_defaults.yaml | sed -e '$afastp:\\n  s_name_filenames: true' > multiqc/multiqc_config.yaml && \
+        multiqc --config multiqc/multiqc_config.yaml -o multiqc/ multiqc/log >& {log} && \
+        rm -rf multiqc/log
+        """
 
 ## DON'T CHANGE ABOVE THIS LINE ##

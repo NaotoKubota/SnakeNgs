@@ -14,6 +14,7 @@ All notable changes to this SnakeNgs project will be documented in this file.
 - `Whippet.smk`: Use single thread to allow parallel execution of the `quant` rule.
 - `LeafCutter.smk`: Remove rule `plottingSpliceJunctions`.
 - `preprocessing_RNAseq.smk`: Add rule `CollectRnaSeqMetrics` and `CollectInsertSizeMetrics` to collect metrics.
+- Use `multiqc/multiqc:v1.25` image for MultiQC.
 
 ### Fixed
 
