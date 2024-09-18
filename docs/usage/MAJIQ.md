@@ -16,7 +16,7 @@ Snakemake workflow for differential RNA splicing analysis using [MAJIQ](https://
 
 1. Parse the experiment table to create a setting file for MAJIQ.
 2. Build splicegraph using [MAJIQ](https://majiq.biociphers.org/) `build`.
-3. Differential splicing analysis using [MAJIQ](https://majiq.biociphers.org/) `heterogen`.
+3. Differential splicing analysis using [MAJIQ](https://majiq.biociphers.org/) `heterogen` and `deltapsi`.
 4. Make a tab-separated summary of the results using [MAJIQ](https://majiq.biociphers.org/) `voila tsv`.
 5. Modulize the results using [MAJIQ](https://majiq.biociphers.org/) `voila modulize`.
 
