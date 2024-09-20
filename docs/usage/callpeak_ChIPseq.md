@@ -65,4 +65,4 @@ sample3	/path/to/sample3_target.bam	/path/to/control_A.bam
 
 - [quay.io/biocontainers/macs2:2.2.9.1--py39hf95cd2a_0](https://quay.io/repository/biocontainers/macs2)
 - [quay.io/biocontainers/ucsc-bedgraphtobigwig:445--h954228d_0](https://quay.io/repository/biocontainers/ucsc-bedgraphtobigwig)
-- [multiqc/multiqc:latest](https://hub.docker.com/r/multiqc/multiqc)
+- [multiqc/multiqc:v1.25](https://hub.docker.com/r/multiqc/multiqc)

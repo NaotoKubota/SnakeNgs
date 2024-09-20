@@ -66,4 +66,4 @@ Please refer to the [tutorial](../tutorial/RNAseq_preprocessing.md) for more inf
 - [quay.io/biocontainers/samtools:1.18--h50ea8bc_1](https://quay.io/repository/biocontainers/samtools)
 - [quay.io/biocontainers/deeptools:3.5.4--pyhdfd78af_1](https://quay.io/repository/biocontainers/deeptools)
 - [quay.io/biocontainers/picard:3.1.1--hdfd78af_0](https://quay.io/repository/biocontainers/picard)
-- [multiqc/multiqc:latest](https://hub.docker.com/r/multiqc/multiqc)
+- [multiqc/multiqc:v1.25](https://hub.docker.com/r/multiqc/multiqc)
