@@ -21,7 +21,7 @@ Snakemake workflow for UMI counting from single-nucleus RNA-seq data with [kb-py
 
 ``` bash
 snakemake -s /path/to/SnakeNgs/snakefile/kb-nac.smk \
---configfile <path to config.yaml> \
+--configfile /path/to/config.yaml \
 --cores <int> \
 --use-singularity \
 --rerun-incomplete

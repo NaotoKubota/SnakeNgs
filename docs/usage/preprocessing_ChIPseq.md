@@ -26,7 +26,7 @@ Snakemake workflow for preprocessing **paired**-end ChIP-seq/ATAC-seq data.
 
 ``` bash
 snakemake -s /path/to/SnakeNgs/snakefile/preprocessing_ChIPseq.smk \
---configfile <path to config.yaml> \
+--configfile /path/to/config.yaml \
 --cores <int> \
 --use-singularity \
 --rerun-incomplete
@@ -67,4 +67,4 @@ Please refer to the [tutorial](../tutorial/ChIP-ATAC_preprocessing.md) for more 
 - [quay.io/biocontainers/samtools:1.18--h50ea8bc_1](https://quay.io/repository/biocontainers/samtools)
 - [quay.io/biocontainers/picard:3.1.1--hdfd78af_0](https://quay.io/repository/biocontainers/picard)
 - [quay.io/biocontainers/deeptools:3.5.4--pyhdfd78af_1](https://quay.io/repository/biocontainers/deeptools)
-- [multiqc/multiqc:latest](https://hub.docker.com/r/multiqc/multiqc)
+- [multiqc/multiqc:v1.25](https://hub.docker.com/r/multiqc/multiqc)

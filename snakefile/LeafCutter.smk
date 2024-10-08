@@ -37,7 +37,6 @@ rule all:
     input:
         cluster_significance = "differential_cluster_significance.txt",
         effect_sizes = "differential_effect_sizes.txt",
-        ds_plots = "ds_plots.pdf",
         leafviz_rdata = "leafviz.Rdata",
         cluster_classification = "cluster_classifications.tsv",
         cluster_summary = "cluster_summary.tsv",
@@ -172,33 +171,6 @@ rule differentialAnalysis:
         -g {config[min_samples_per_group]} \
         {input.clusters} \
         {input.groupfile} \
-        >& {log}
-        """
-
-rule plottingSpliceJunctions:
-    container:
-        "docker://naotokubota/leafcutter:0.2.9"
-    input:
-        clusters = "clusters_perind_numers.counts.gz",
-        groupfile = "groupfile.txt",
-        exon = "exons.txt.gz",
-        cluster_significance = "differential_cluster_significance.txt",
-    output:
-        ds_plots = "ds_plots.pdf"
-    threads:
-        1
-    benchmark:
-        "benchmark/leafcutter/plottingSpliceJunctions.txt"
-    log:
-        "log/leafcutter/plottingSpliceJunctions.log"
-    shell:
-        """
-        /opt/leafcutter/leafcutter/scripts/ds_plots.R \
-        -e {input.exon} \
-        {input.clusters} \
-        {input.groupfile} \
-        {input.cluster_significance} \
-        -f {config[FDR]} \
         >& {log}
         """
 

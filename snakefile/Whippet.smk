@@ -62,7 +62,7 @@ rule quant:
     output:
         psi = "quant/all/{sample}.psi.gz"
     threads:
-        workflow.cores
+        1
     benchmark:
         "benchmark/whippet_quant_{sample}.txt"
     log:

@@ -11,12 +11,14 @@ Usage:
 workdir: config["workdir"]
 star_index = config["star_index"]
 samples = config["samples"]
+gtf = config["gtf"]
 
 rule all:
     input:
         multiqc = "multiqc/multiqc_report.html",
         bam = expand("star/{sample}/{sample}_Aligned.out.bam", sample = samples),
-        bigwig = expand("bigwig/{sample}.bw", sample = samples)
+        bigwig = expand("bigwig/{sample}.bw", sample = samples),
+        RnaSeqMetrics = expand("metrics/{sample}.picard.analysis.CollectRnaSeqMetrics", sample = samples)
 
 rule qc:
     wildcard_constraints:
@@ -27,9 +29,9 @@ rule qc:
         R1 = "fastq/{sample}.fastq.gz"
     output:
         R1 = "fastp/{sample}.fastq.gz",
-        json = "fastp/log/{sample}_fastp.json"
+        json = "fastp/log/{sample}.json"
     params:
-        html = "fastp/log/{sample}_fastp.html"
+        html = "fastp/log/{sample}.html"
     threads:
         8
     benchmark:
@@ -102,12 +104,64 @@ rule bigwig:
     shell:
         "bamCoverage -b {input} -o {output} -p {threads} --binSize 1 >& {log}"
 
+rule makeRefFlat:
+    wildcard_constraints:
+        sample = "|".join([re.escape(x) for x in samples])
+    container:
+        "docker://quay.io/biocontainers/ucsc-gtftogenepred:469--h9b8f530_0"
+    output:
+        refFlat = "metrics/refFlat.txt"
+    threads:
+        1
+    benchmark:
+        "benchmark/refFlat.txt"
+    log:
+        "log/refFlat.log"
+    shell:
+        "gtfToGenePred -genePredExt -geneNameAsName2 {gtf} refFlat.tmp >& {log} && "
+        "cat refFlat.tmp | awk -F'\t' -v OFS='\t' '{{print $12,$1,$2,$3,$4,$5,$6,$7,$8,$9,$10}}' > {output.refFlat} && "
+        "rm -rf refFlat.tmp"
+
+rule makeRibosomalInterval:
+    output:
+        ribosomalInterval = "metrics/ribosomal_interval.txt"
+    threads:
+        1
+    benchmark:
+        "benchmark/ribosomal_interval.txt"
+    shell:
+        '''
+        cat {star_index}/chrNameLength.txt | awk -F"\t" -v OFS="\t" '{{print "@SQ","SN:"$1,"LN:"$2}}' > {output.ribosomalInterval} && \
+        cat {gtf} | grep -e 'gene_type "rRNA"' -e 'gene_biotype "rRNA"' | awk -F"\t" -v OFS="\t" '$3 == "transcript"{{print $1,$4-1,$5,$7,$9}}' >> {output.ribosomalInterval}
+        '''
+
+rule CollectRnaSeqMetrics:
+    wildcard_constraints:
+        sample = "|".join([re.escape(x) for x in samples])
+    container:
+        "docker://quay.io/biocontainers/picard:3.1.1--hdfd78af_0"
+    input:
+        bam = "star/{sample}/{sample}_Aligned.out.bam",
+        refFlat = "metrics/refFlat.txt",
+        ribosomalInterval = "metrics/ribosomal_interval.txt"
+    output:
+        RnaSeqMetrics = "metrics/{sample}.picard.analysis.CollectRnaSeqMetrics"
+    threads:
+        1
+    benchmark:
+        "benchmark/picard_CollectRnaSeqMetrics_{sample}.txt"
+    log:
+        "log/picard_CollectRnaSeqMetrics_{sample}.log"
+    shell:
+        "picard CollectRnaSeqMetrics -I {input.bam} -O {output.RnaSeqMetrics} --REF_FLAT {input.refFlat} --STRAND_SPECIFICITY NONE --RIBOSOMAL_INTERVALS {input.ribosomalInterval} >& {log}"
+
 rule multiqc:
     container:
-        "docker://multiqc/multiqc:latest"
+        "docker://multiqc/multiqc:v1.25"
     input:
-        json = expand("fastp/log/{sample}_fastp.json", sample = samples),
-        starlog = expand("star/{sample}/{sample}_Log.final.out", sample = samples)
+        json = expand("fastp/log/{sample}.json", sample = samples),
+        starlog = expand("star/{sample}/{sample}_Log.final.out", sample = samples),
+        RnaSeqMetrics = expand("metrics/{sample}.picard.analysis.CollectRnaSeqMetrics", sample = samples)
     output:
         "multiqc/multiqc_report.html"
     benchmark:
@@ -117,7 +171,7 @@ rule multiqc:
     shell:
         "rm -rf multiqc && "
         "mkdir -p multiqc/log && "
-        "cp {input.json} {input.starlog} multiqc/log && "
+        "cp {input.json} {input.starlog} {input.RnaSeqMetrics} multiqc/log && "
         "multiqc -o multiqc/ multiqc/log >& {log} && "
         "rm -rf multiqc/log"
 

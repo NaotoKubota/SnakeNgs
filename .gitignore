@@ -1,10 +1,6 @@
 .snakemake
 logs
-
-config/*_test.yaml
-config/*_example.yaml
-config/*txt
-config/*tsv
-config/*_example.ini
-
+config/
 .DS_Store
+snakevision_rulegraph.bash
+slurm-*.out

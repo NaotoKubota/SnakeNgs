@@ -33,9 +33,9 @@ rule qc:
     output:
         R1 = "fastp/{sample}_1.fq.gz",
         R2 = "fastp/{sample}_2.fq.gz",
-        json = "fastp/log/{sample}_fastp.json"
+        json = "fastp/log/{sample}.json"
     params:
-        html = "fastp/log/{sample}_fastp.html"
+        html = "fastp/log/{sample}.html"
     threads:
         8
     benchmark:
@@ -177,9 +177,9 @@ rule bigwig:
 
 rule multiqc:
     container:
-        "docker://multiqc/multiqc:latest"
+        "docker://multiqc/multiqc:v1.25"
     input:
-        json = expand("fastp/log/{sample}_fastp.json", sample = samples),
+        json = expand("fastp/log/{sample}.json", sample = samples),
         bowtie2log = expand("log/bowtie2/{sample}.log", sample = samples),
         picardlog = expand("log/picard_{sample}.log", sample = samples),
         plotFingerprintlog_qc = "plotFingerprint/fingerprint.qc.txt",
@@ -191,10 +191,13 @@ rule multiqc:
     log:
         "log/multiqc.log"
     shell:
-        "rm -rf multiqc_preprocessing && "
-        "mkdir -p multiqc_preprocessing/log && "
-        "cp {input.json} {input.bowtie2log} {input.picardlog} {input.plotFingerprintlog_qc} {input.plotFingerprintlog_tab} multiqc_preprocessing/log && "
-        "multiqc -o multiqc_preprocessing/ multiqc_preprocessing/log >& {log} && "
-        "rm -rf multiqc_preprocessing/log"
+        """
+        rm -rf multiqc_preprocessing && \
+        mkdir -p multiqc_preprocessing/log && \
+        cp {input.json} {input.bowtie2log} {input.picardlog} {input.plotFingerprintlog_qc} {input.plotFingerprintlog_tab} multiqc_preprocessing/log && \
+        cat /usr/local/lib/python3.12/site-packages/multiqc/config_defaults.yaml | sed -e '$afastp:\\n  s_name_filenames: true' > multiqc_preprocessing/multiqc_config.yaml && \
+        multiqc --config multiqc_preprocessing/multiqc_config.yaml -o multiqc_preprocessing/ multiqc_preprocessing/log >& {log} && \
+        rm -rf multiqc_preprocessing/log
+        """
 
 ## DON'T CHANGE ABOVE THIS LINE ##

@@ -27,9 +27,9 @@ rule qc:
 		R1 = "fastq/{sample}.fastq.gz"
 	output:
 		R1 = "fastp/{sample}.fastq.gz",
-		json = "fastp/log/{sample}_fastp.json"
+		json = "fastp/log/{sample}.json"
 	params:
-		html = "fastp/log/{sample}_fastp.html"
+		html = "fastp/log/{sample}.html"
 	threads:
 		8
 	benchmark:
@@ -141,9 +141,9 @@ rule bigwig:
 
 rule multiqc:
 	container:
-		"docker://multiqc/multiqc:latest"
+		"docker://multiqc/multiqc:v1.25"
 	input:
-		json = expand("fastp/log/{sample}_fastp.json", sample = samples),
+		json = expand("fastp/log/{sample}.json", sample = samples),
 		starlog = expand("star/{sample}/{sample}_Log.final.out", sample = samples),
 		picardlog = expand("log/picard_{sample}.log", sample = samples)
 	output:

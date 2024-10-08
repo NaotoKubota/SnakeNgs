@@ -24,7 +24,7 @@ Snakemake workflow for footprinting analysis of ATAC-seq data using [TOBIAS](htt
 
 ``` bash
 snakemake -s /path/to/SnakeNgs/snakefile/footprinting_ATACseq.smk \
---configfile <path to config.yaml> \
+--configfile /path/to/config.yaml \
 --cores <int> \
 --use-singularity \
 --rerun-incomplete

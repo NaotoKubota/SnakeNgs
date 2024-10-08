@@ -63,8 +63,8 @@ samples_Ref, samples_Alt = get_samples_per_group(config["experiment_table"])
 
 rule all:
     input:
-        heterogen_tsv = "heterogen/Alt-Ref.het.tsv",
-        summary = "voila_modulize/summary.tsv"
+        voila_tsv = expand("{module}/Alt-Ref.{module}.tsv", module = ["het", "deltapsi"]),
+        summary = expand("voila_modulize/{module}/summary.tsv", module = ["het", "deltapsi"])
 
 rule convert_experiment_table_to_setting_file:
     output:
@@ -80,7 +80,7 @@ rule convert_experiment_table_to_setting_file:
 
 rule build:
     container:
-        "/rhome/naotok/bigdata/singularity/majiq_0.1.sif"
+        config["container"]
     input:
         setting_file = "setting_file.ini",
         gff = config["gff"]
@@ -106,17 +106,17 @@ rule build:
 
 rule heterogen:
     container:
-        "/rhome/naotok/bigdata/singularity/majiq_0.1.sif"
+        config["container"]
     input:
         majiq_ref = expand("build/{sample_ref}.majiq", sample_ref = samples_Ref),
         majiq_alt = expand("build/{sample_alt}.majiq", sample_alt = samples_Alt)
     output:
-        voila = "heterogen/Alt-Ref.het.voila"
+        voila = "het/Alt-Ref.het.voila"
     params:
         majiq_ref = " ".join(["build/" + sample + ".majiq" for sample in samples_Ref]),
         majiq_alt = " ".join(["build/" + sample + ".majiq" for sample in samples_Alt])
     threads:
-        workflow.cores
+        workflow.cores / 2
     benchmark:
         "benchmark/heterogen.txt"
     log:
@@ -125,7 +125,35 @@ rule heterogen:
         """
         majiq heterogen \
         -j {threads} \
-        -o heterogen \
+        -o het \
+        -n Alt Ref \
+        -grp1 {params.majiq_alt} \
+        -grp2 {params.majiq_ref} \
+        > {log} 2>&1
+        """
+
+rule deltapsi:
+    container:
+        config["container"]
+    input:
+        majiq_ref = expand("build/{sample_ref}.majiq", sample_ref = samples_Ref),
+        majiq_alt = expand("build/{sample_alt}.majiq", sample_alt = samples_Alt)
+    output:
+        voila = "deltapsi/Alt-Ref.deltapsi.voila"
+    params:
+        majiq_ref = " ".join(["build/" + sample + ".majiq" for sample in samples_Ref]),
+        majiq_alt = " ".join(["build/" + sample + ".majiq" for sample in samples_Alt])
+    threads:
+        workflow.cores / 2
+    benchmark:
+        "benchmark/deltapsi.txt"
+    log:
+        "log/deltapsi.log"
+    shell:
+        """
+        majiq deltapsi \
+        -j {threads} \
+        -o deltapsi \
         -n Alt Ref \
         -grp1 {params.majiq_alt} \
         -grp2 {params.majiq_ref} \
@@ -134,18 +162,20 @@ rule heterogen:
 
 rule voila_tsv:
     container:
-        "/rhome/naotok/bigdata/singularity/majiq_0.1.sif"
+        config["container"]
+    wildcard_constraints:
+        module = "|".join(["het", "deltapsi"])
     input:
-        voila = "heterogen/Alt-Ref.het.voila",
+        voila = "{module}/Alt-Ref.{module}.voila",
         splicegraph = "build/splicegraph.sql"
     output:
-        tsv = "heterogen/Alt-Ref.het.tsv"
+        tsv = "{module}/Alt-Ref.{module}.tsv"
     threads:
-        workflow.cores
+        workflow.cores / 2
     benchmark:
-        "benchmark/voila_tsv.txt"
+        "benchmark/voila_tsv_{module}.txt"
     log:
-        "log/voila_tsv.log"
+        "log/voila_tsv_{module}.log"
     shell:
         """
         voila tsv \
@@ -158,23 +188,27 @@ rule voila_tsv:
 
 rule voila_modulize:
     container:
-        "/rhome/naotok/bigdata/singularity/majiq_0.1.sif"
+        config["container"]
+    wildcard_constraints:
+        module = "|".join(["het", "deltapsi"])
     input:
         splicegraph = "build/splicegraph.sql",
-        voila = "heterogen/Alt-Ref.het.voila"
+        voila = "{module}/Alt-Ref.{module}.voila"
     output:
-        summary = "voila_modulize/summary.tsv"
+        summary = "voila_modulize/{module}/summary.tsv"
+    params:
+        outdir = "voila_modulize/{module}"
     threads:
-        workflow.cores
+        workflow.cores / 2
     benchmark:
-        "benchmark/voila_modulize.txt"
+        "benchmark/voila_modulize_{module}.txt"
     log:
-        "log/voila_modulize.log"
+        "log/voila_modulize_{module}.log"
     shell:
         """
         voila modulize \
         -j {threads} \
-        -d voila_modulize \
+        -d {params.outdir} \
         --show-all \
         --overwrite \
         {input.splicegraph} \

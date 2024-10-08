@@ -21,7 +21,7 @@ Snakemake workflow for differential RNA splicing analysis using [Whippet](https:
 
 ``` bash
 snakemake -s /path/to/SnakeNgs/snakefile/Whippet.smk \
---configfile <path to config.yaml> \
+--configfile /path/to/config.yaml \
 --cores <int> \
 --use-singularity \
 --rerun-incomplete
