@@ -1,4 +1,4 @@
-# SnakeNgs (v0.1.4)
+# SnakeNgs (v0.2.0)
 
 [![GitHub License](https://img.shields.io/github/license/NaotoKubota/SnakeNgs)](https://github.com/NaotoKubota/SnakeNgs/blob/main/LICENSE)
 [![DOI](https://zenodo.org/badge/843927384.svg)](https://zenodo.org/doi/10.5281/zenodo.13337082)
