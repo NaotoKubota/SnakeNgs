@@ -2,7 +2,7 @@
 
 All notable changes to this SnakeNgs project will be documented in this file.
 
-## [v0.2.0] - 2024-??-??
+## [v0.2.0] - 2024-10-08
 
 ### Added
 
