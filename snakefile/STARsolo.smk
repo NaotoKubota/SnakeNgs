@@ -48,7 +48,8 @@ samples = [str(x) for x in list(samples_dict.keys())]
 
 rule all:
 	input:
-		expand("star/{sample}/Aligned.sortedByCoord.out.bam", sample = samples)
+		bam = expand("star/{sample}/Aligned.sortedByCoord.out.bam", sample = samples),
+		bai = expand("star/{sample}/Aligned.sortedByCoord.out.bam.bai", sample = samples)
 
 rule STARsolo:
 	wildcard_constraints:
@@ -95,4 +96,24 @@ rule STARsolo:
 		--outSAMattributes NH HI nM AS CR UR CB UB GX GN sS sQ sM \
 		--outSAMtype BAM SortedByCoordinate \
 		&> ../../{log}
+		"""
+
+rule index:
+	wildcard_constraints:
+		sample = "|".join([re.escape(str(x)) for x in samples])
+	container:
+		"docker://quay.io/biocontainers/samtools:1.18--h50ea8bc_1"
+	input:
+		bam = "star/{sample}/Aligned.sortedByCoord.out.bam"
+	output:
+		bai = "star/{sample}/Aligned.sortedByCoord.out.bam.bai"
+	threads:
+		workflow.cores / 4
+	benchmark:
+		"benchmark/samtools_index_{sample}.txt"
+	log:
+		"log/samtools_index_{sample}.log"
+	shell:
+		"""
+		samtools index {input.bam} &> {log}
 		"""
