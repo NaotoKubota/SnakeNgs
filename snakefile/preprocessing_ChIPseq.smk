@@ -103,7 +103,7 @@ rule markdup:
     benchmark:
         "benchmark/picard_{sample}.txt"
     log:
-        "log/picard_{sample}.log"
+        "log/picard/{sample}.log"
     shell:
         "picard MarkDuplicates "
         "-I {input} -O {output} "
@@ -181,7 +181,7 @@ rule multiqc:
     input:
         json = expand("fastp/log/{sample}.json", sample = samples),
         bowtie2log = expand("log/bowtie2/{sample}.log", sample = samples),
-        picardlog = expand("log/picard_{sample}.log", sample = samples),
+        picardlog = expand("log/picard/{sample}.log", sample = samples),
         plotFingerprintlog_qc = "plotFingerprint/fingerprint.qc.txt",
         plotFingerprintlog_tab = "plotFingerprint/fingerprint.tab"
     output:
@@ -193,9 +193,12 @@ rule multiqc:
     shell:
         """
         rm -rf multiqc_preprocessing && \
-        mkdir -p multiqc_preprocessing/log && \
-        cp {input.json} {input.bowtie2log} {input.picardlog} {input.plotFingerprintlog_qc} {input.plotFingerprintlog_tab} multiqc_preprocessing/log && \
-        cat /usr/local/lib/python3.12/site-packages/multiqc/config_defaults.yaml | sed -e '$afastp:\\n  s_name_filenames: true' > multiqc_preprocessing/multiqc_config.yaml && \
+        mkdir -p multiqc_preprocessing/log/picard && \
+        cp {input.json} {input.bowtie2log} {input.plotFingerprintlog_qc} {input.plotFingerprintlog_tab} multiqc_preprocessing/log && \
+        cp {input.picardlog} multiqc_preprocessing/log/picard && \
+        cat /usr/local/lib/python3.12/site-packages/multiqc/config_defaults.yaml | \
+        sed -e '$afastp:\\n  s_name_filenames: true' -e '$apicard_config:\\n  s_name_filenames: true' \
+        > multiqc_preprocessing/multiqc_config.yaml && \
         multiqc --config multiqc_preprocessing/multiqc_config.yaml -o multiqc_preprocessing/ multiqc_preprocessing/log >& {log} && \
         rm -rf multiqc_preprocessing/log
         """
