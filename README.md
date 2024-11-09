@@ -54,6 +54,7 @@ That's it! You can find the detailed usage of each pipeline in the [documentatio
 	- [callpeak_ATACseq.smk](https://naotokubota.github.io/SnakeNgs/usage/callpeak_ATACseq)
 	- [differential_ATACseq.smk](https://naotokubota.github.io/SnakeNgs/usage/differential_ATACseq)
 	- [footprinting_ATACseq.smk](https://naotokubota.github.io/SnakeNgs/usage/footprinting_ATACseq)
+	- [footprinting_timseseries_ATACseq.smk](https://naotokubota.github.io/SnakeNgs/usage/footprinting_timeseries_ATACseq)
 - iCLIP-seq & HITSCLIP
 	- [preprocessing_iCLIPseq.smk](https://naotokubota.github.io/SnakeNgs/usage/preprocessing_iCLIPseq)
 	- [preprocessing_HITSCLIP.smk](https://naotokubota.github.io/SnakeNgs/usage/preprocessing_HITSCLIP)
