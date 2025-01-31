@@ -35,7 +35,8 @@ rule all:
 	input:
 		adata_unfiliterd_h5ad = expand("kb/{sample}/counts_unfiltered/adata.h5ad", sample = samples),
 		adata_filtered_h5ad = expand("kb/{sample}/counts_filtered/adata.h5ad", sample = samples),
-		inspect = expand("kb/{sample}/inspect.json", sample = samples)
+		inspect = expand("kb/{sample}/inspect.json", sample = samples),
+		multiqc = "multiqc/multiqc_report.html"
 
 rule kb_ref:
 	container:
@@ -111,3 +112,19 @@ rule kb_count:
 		--verbose \
 		{params.R1_R2} >& {log}
 		"""
+
+rule multiqc:
+    container:
+        "docker://multiqc/multiqc:v1.27"
+    input:
+        inspect = expand("kb/{sample}/inspect.json", sample = samples)
+    output:
+        "multiqc/multiqc_report.html"
+    benchmark:
+        "benchmark/multiqc.txt"
+    log:
+        "log/multiqc.log"
+    shell:
+        """
+        multiqc -o multiqc/ kb/ >& {log}
+        """
