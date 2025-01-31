@@ -83,7 +83,8 @@ rule kb_count:
 	output:
 		adata_unfiltered_h5ad = "kb/{sample}/counts_unfiltered/adata.h5ad",
 		adata_filtered_h5ad = "kb/{sample}/counts_filtered/adata.h5ad",
-		inspect = "kb/{sample}/inspect.json"
+		inspect = "kb/{sample}/inspect.json",
+		filtered_bus = "kb/{sample}/output.filtered.bus"
 	params:
 		R1_R2 = lambda wildcards: samples_dict[wildcards.sample],
 		kb_output = "kb/{sample}"
@@ -113,18 +114,47 @@ rule kb_count:
 		{params.R1_R2} >& {log}
 		"""
 
+rule bustools_inspect_filtered:
+	wildcard_constraints:
+		sample = "|".join([re.escape(str(x)) for x in samples])
+	container:
+		"docker://quay.io/biocontainers/bustools:0.43.2--he1fd2f9_2"
+	input:
+		filtered_bus = "kb/{sample}/output.filtered.bus"
+	output:
+		inspect_filtered = "kb/inspect_filtered/{sample}/inspect.json"
+	params:
+		path = "kb/{sample}"
+	benchmark:
+		"benchmark/bustools_inspect_filtered_{sample}.txt"
+	log:
+		"log/bustools_inspect_filtered_{sample}.log"
+	shell:
+		"""
+		mkdir -p  kb/inspect_filtered/{wildcards.sample} && \
+		# Get the whitelist file within in the path
+		whitelist=$(ls {params.path} | grep whitelist) && \
+		bustools \
+		inspect \
+		{input.filtered_bus} \
+		-o {output.inspect_filtered} \
+		-w {params.path}/$whitelist \
+		&> {log}
+		"""
+
 rule multiqc:
-    container:
-        "docker://multiqc/multiqc:v1.27"
-    input:
-        inspect = expand("kb/{sample}/inspect.json", sample = samples)
-    output:
-        "multiqc/multiqc_report.html"
-    benchmark:
-        "benchmark/multiqc.txt"
-    log:
-        "log/multiqc.log"
-    shell:
-        """
-        multiqc -o multiqc/ kb/ >& {log}
-        """
+	container:
+		"docker://multiqc/multiqc:v1.27"
+	input:
+		inspect_filtered = expand("kb/inspect_filtered/{sample}/inspect.json", sample = samples)
+	output:
+		"multiqc/multiqc_report.html"
+	benchmark:
+		"benchmark/multiqc.txt"
+	log:
+		"log/multiqc.log"
+	shell:
+		"""
+		rm -rf multiqc && \
+		multiqc -o multiqc/ kb/inspect_filtered >& {log}
+		"""
