@@ -46,6 +46,8 @@ That's it! You can find the detailed usage of each pipeline in the [documentatio
 	- [LeafCutter.smk](https://naotokubota.github.io/SnakeNgs/usage/LeafCutter)
 - snRNA-seq
 	- [kb-nac.smk](https://naotokubota.github.io/SnakeNgs/usage/kb-nac)
+	- [STARsolo.smk](https://naotokubota.github.io/SnakeNgs/usage/STARsolo)
+	- [cellranger_count.smk](https://naotokubota.github.io/SnakeNgs/usage/cellranger_count)
 - ChIP-seq
 	- [preprocessing_ChIPseq.smk](https://naotokubota.github.io/SnakeNgs/usage/preprocessing_ChIPseq)
 	- [preprocessing_ChIPseq_single.smk](https://naotokubota.github.io/SnakeNgs/usage/preprocessing_ChIPseq_single)
