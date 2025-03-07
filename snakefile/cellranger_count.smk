@@ -3,7 +3,7 @@
 Snakefile for gene count quantification from single-cell/nucleus RNA-seq data by cellranger
 
 Usage:
-    snakemake -s cellranger_count.smk --configfile <path to config.yaml> --cores <int> --use-singularity
+    snakemake -s count.smk --configfile <path to config.yaml> --cores <int> --use-singularity
 '''
 
 import sys
@@ -49,7 +49,7 @@ fastq_converted_name_all = [fastq_dict[sample][read][i+1]["fastq_converted_name"
 
 rule all:
     input:
-        expand("cellranger_count/{sample}/outs/web_summary.html", sample = samples),
+        expand("count/{sample}/outs/web_summary.html", sample = samples),
         "multiqc/multiqc_report.html"
 
 rule fastq_naming_conversion:
@@ -71,7 +71,7 @@ rule fastq_naming_conversion:
                     fastq_converted_name = fastq_dict[sample][read][i+1]["fastq_converted_name"]
                     shell(f"ln -sf {fastq} {fastq_converted_name}")
 
-rule cellranger_count:
+rule count:
     container:
         "docker://litd/docker-cellranger:v9.0.0"
     wildcard_constraints:
@@ -80,20 +80,20 @@ rule cellranger_count:
         fastq_converted_name = lambda wildcards: [fastq_dict[wildcards.sample][read][i+1]["fastq_converted_name"] for read in ["R1", "R2"] for i in range(len(fastq_dict[wildcards.sample][read]))],
         transcriptome = config["transcriptome"]
     output:
-        "cellranger_count/{sample}/outs/web_summary.html"
+        "count/{sample}/outs/web_summary.html"
     threads:
         workflow.cores
     resources:
         mem_mb=64
     benchmark:
-        "benchmark/cellranger_count_{sample}.txt"
+        "benchmark/count_{sample}.txt"
     log:
-        "log/cellranger_count_{sample}.log"
+        "log/count_{sample}.log"
     shell:
         """
-        rm -rf cellranger_count/{wildcards.sample} && \
+        rm -rf count/{wildcards.sample} && \
         cellranger count \
-        --output-dir cellranger_count/{wildcards.sample} \
+        --output-dir count/{wildcards.sample} \
         --id {wildcards.sample} \
         --transcriptome {input.transcriptome} \
         --fastqs fastq \
@@ -109,7 +109,7 @@ rule multiqc:
     container:
         "docker://multiqc/multiqc:v1.27"
     input:
-        expand("cellranger_count/{sample}/outs/web_summary.html", sample=samples)
+        expand("count/{sample}/outs/web_summary.html", sample=samples)
     output:
         "multiqc/multiqc_report.html"
     threads:
@@ -120,5 +120,5 @@ rule multiqc:
         "log/multiqc.log"
     shell:
         """
-        multiqc -o multiqc/ cellranger_count/ >& {log}
+        multiqc --force -o multiqc/ count/ >& {log}
         """
