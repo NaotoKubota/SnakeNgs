@@ -1,4 +1,4 @@
-# SnakeNgs (v0.2.0)
+# SnakeNgs (v0.3.0)
 
 [![GitHub License](https://img.shields.io/github/license/NaotoKubota/SnakeNgs)](https://github.com/NaotoKubota/SnakeNgs/blob/main/LICENSE)
 [![DOI](https://zenodo.org/badge/843927384.svg)](https://zenodo.org/doi/10.5281/zenodo.13337082)
@@ -46,6 +46,8 @@ That's it! You can find the detailed usage of each pipeline in the [documentatio
 	- [LeafCutter.smk](https://naotokubota.github.io/SnakeNgs/usage/LeafCutter)
 - snRNA-seq
 	- [kb-nac.smk](https://naotokubota.github.io/SnakeNgs/usage/kb-nac)
+	- [STARsolo.smk](https://naotokubota.github.io/SnakeNgs/usage/STARsolo)
+	- [cellranger_count.smk](https://naotokubota.github.io/SnakeNgs/usage/cellranger_count)
 - ChIP-seq
 	- [preprocessing_ChIPseq.smk](https://naotokubota.github.io/SnakeNgs/usage/preprocessing_ChIPseq)
 	- [preprocessing_ChIPseq_single.smk](https://naotokubota.github.io/SnakeNgs/usage/preprocessing_ChIPseq_single)
@@ -54,6 +56,7 @@ That's it! You can find the detailed usage of each pipeline in the [documentatio
 	- [callpeak_ATACseq.smk](https://naotokubota.github.io/SnakeNgs/usage/callpeak_ATACseq)
 	- [differential_ATACseq.smk](https://naotokubota.github.io/SnakeNgs/usage/differential_ATACseq)
 	- [footprinting_ATACseq.smk](https://naotokubota.github.io/SnakeNgs/usage/footprinting_ATACseq)
+	- [footprinting_timeseries_ATACseq.smk](https://naotokubota.github.io/SnakeNgs/usage/footprinting_timeseries_ATACseq)
 - iCLIP-seq & HITSCLIP
 	- [preprocessing_iCLIPseq.smk](https://naotokubota.github.io/SnakeNgs/usage/preprocessing_iCLIPseq)
 	- [preprocessing_HITSCLIP.smk](https://naotokubota.github.io/SnakeNgs/usage/preprocessing_HITSCLIP)

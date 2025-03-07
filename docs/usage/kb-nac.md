@@ -16,6 +16,8 @@ Snakemake workflow for UMI counting from single-nucleus RNA-seq data with [kb-py
 
 1. Build a kallisto index using the reference genome and transcriptome by `kb ref` with the parameter `--workflow nac`.
 2. Quantify UMI counts using `kb count` with the parameter `--workflow nac --h5ad --gene-names --sum total --filter bustools --overwrite`.
+3. Summarize and generate a report for a filtered BUS file using `bustools inspect`.
+4. Make summary statistics using [MultiQC](https://multiqc.info/).
 
 ## Usage
 
@@ -91,3 +93,4 @@ Please refer to the [tutorial](../tutorial/snRNAseq_count.md) for more informati
 ## Docker image used in the workflow
 
 - [quay.io/biocontainers/kb-python:0.28.2--pyhdfd78af_2](https://quay.io/repository/biocontainers/kb-python)
+- [multiqc/multiqc:v1.27](https://hub.docker.com/r/multiqc/multiqc)
