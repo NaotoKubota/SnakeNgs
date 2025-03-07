@@ -1,6 +1,6 @@
 # cellranger_count.smk
 
-Snakemake workflow for gene count quantification from single-cell/nucleus RNA-seq data by [CellRanger](https://github.com/10XGenomics/cellranger).
+Snakemake workflow for gene count quantification from single-cell/nucleus RNA-seq data by [Cell Ranger](https://github.com/10XGenomics/cellranger).
 
 !!! note
 
