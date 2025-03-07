@@ -7,6 +7,7 @@ All notable changes to this SnakeNgs project will be documented in this file.
 ### Added
 
 - `STARsolo.smk`: gene count quantification from single-cell/nucleus RNA-seq data by STARsolo.
+- `cellranger_count.smk`: gene count quantification from single-cell/nucleus RNA-seq data by Cell Ranger.
 
 ### Changed
 
