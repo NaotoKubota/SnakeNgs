@@ -41,6 +41,7 @@ snakemake -s /path/to/SnakeNgs/snakefile/preprocessing_RNAseq.smk \
         - [LeafCutter.smk](usage/LeafCutter.md)
     - snRNA-seq
         - [kb-nac.smk](usage/kb-nac.md)
+        - [STARsolo.smk](usage/STARsolo.md)
     - ChIP-seq
         - [preprocessing_ChIPseq.smk](usage/preprocessing_ChIPseq.md)
         - [preprocessing_ChIPseq_single.smk](usage/preprocessing_ChIPseq_single.md)
