@@ -2,6 +2,17 @@
 
 All notable changes to this SnakeNgs project will be documented in this file.
 
+## [v0.3.0] - 2025-??-??
+
+### Added
+
+- `footprinting_timeseries_ATACseq.smk`: ATAC-seq footprinting time series analysis by TOBIAS.
+
+### Changed
+
+- `callpeak_ATACseq.smk`: Remove the `bedgraphtobigwig` rule.
+- `preprocessing_ChIPseq.smk`: Add `CollectInsertSizeMetrics` rule to collect metrics.
+
 ## [v0.2.0] - 2024-10-08
 
 ### Added
