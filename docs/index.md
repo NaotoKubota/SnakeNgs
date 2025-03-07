@@ -51,6 +51,7 @@ snakemake -s /path/to/SnakeNgs/snakefile/preprocessing_RNAseq.smk \
         - [callpeak_ATACseq.smk](usage/callpeak_ATACseq.md)
         - [differential_ATACseq.smk](usage/differential_ATACseq.md)
         - [footprinting_ATACseq.smk](usage/footprinting_ATACseq.md)
+        - [footprinting_timeseries_ATACseq.smk](usage/footprinting_timeseries_ATACseq.md)
     - iCLIP-seq & HITSCLIP
         - [preprocessing_iCLIPseq.smk](usage/preprocessing_iCLIPseq.md)
         - [preprocessing_HITSCLIP.smk](usage/preprocessing_HITSCLIP.md)

@@ -103,7 +103,7 @@ rule markdup:
     benchmark:
         "benchmark/picard_{sample}.txt"
     log:
-        "log/picard_{sample}.log"
+        "log/picard/{sample}.log"
     shell:
         "picard MarkDuplicates "
         "-I {input} -O {output} "
@@ -123,6 +123,26 @@ rule index:
         "bowtie2/{sample}.sort.rmdup.bam.bai"
     shell:
         "samtools index {input}"
+
+rule CollectInsertSizeMetrics:
+    wildcard_constraints:
+        sample = "|".join([re.escape(x) for x in samples])
+    container:
+        "docker://quay.io/biocontainers/picard:3.1.1--hdfd78af_0"
+    input:
+        bam = "bowtie2/{sample}.sort.rmdup.bam",
+        bai = "bowtie2/{sample}.sort.rmdup.bam.bai"
+    output:
+        InsertSizeMetrics = "metrics/CollectInsertSizeMetrics/{sample}",
+        InsertSizeMetrics_pdf = "metrics/CollectInsertSizeMetrics/{sample}.pdf"
+    threads:
+        1
+    benchmark:
+        "benchmark/picard_CollectInsertSizeMetrics_{sample}.txt"
+    log:
+        "log/picard_CollectInsertSizeMetrics_{sample}.log"
+    shell:
+        "picard CollectInsertSizeMetrics -I {input.bam} -O {output.InsertSizeMetrics} --Histogram_FILE {output.InsertSizeMetrics_pdf} >& {log}"
 
 rule plotFingerprint:
     wildcard_constraints:
@@ -181,7 +201,8 @@ rule multiqc:
     input:
         json = expand("fastp/log/{sample}.json", sample = samples),
         bowtie2log = expand("log/bowtie2/{sample}.log", sample = samples),
-        picardlog = expand("log/picard_{sample}.log", sample = samples),
+        picardlog = expand("log/picard/{sample}.log", sample = samples),
+        InsertSizeMetrics = expand("metrics/CollectInsertSizeMetrics/{sample}", sample = samples),
         plotFingerprintlog_qc = "plotFingerprint/fingerprint.qc.txt",
         plotFingerprintlog_tab = "plotFingerprint/fingerprint.tab"
     output:
@@ -193,9 +214,13 @@ rule multiqc:
     shell:
         """
         rm -rf multiqc_preprocessing && \
-        mkdir -p multiqc_preprocessing/log && \
-        cp {input.json} {input.bowtie2log} {input.picardlog} {input.plotFingerprintlog_qc} {input.plotFingerprintlog_tab} multiqc_preprocessing/log && \
-        cat /usr/local/lib/python3.12/site-packages/multiqc/config_defaults.yaml | sed -e '$afastp:\\n  s_name_filenames: true' > multiqc_preprocessing/multiqc_config.yaml && \
+        mkdir -p multiqc_preprocessing/log/picard/CollectInsertSizeMetrics && \
+        cp {input.json} {input.bowtie2log} {input.plotFingerprintlog_qc} {input.plotFingerprintlog_tab} multiqc_preprocessing/log && \
+        cp {input.picardlog} multiqc_preprocessing/log/picard && \
+        cp {input.InsertSizeMetrics} multiqc_preprocessing/log/picard/CollectInsertSizeMetrics && \
+        cat /usr/local/lib/python3.12/site-packages/multiqc/config_defaults.yaml | \
+        sed -e '$afastp:\\n  s_name_filenames: true' -e '$apicard_config:\\n  s_name_filenames: true' \
+        > multiqc_preprocessing/multiqc_config.yaml && \
         multiqc --config multiqc_preprocessing/multiqc_config.yaml -o multiqc_preprocessing/ multiqc_preprocessing/log >& {log} && \
         rm -rf multiqc_preprocessing/log
         """

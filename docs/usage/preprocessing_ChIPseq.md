@@ -18,9 +18,10 @@ Snakemake workflow for preprocessing **paired**-end ChIP-seq/ATAC-seq data.
 2. Alignment using [Bowtie2](http://bowtie-bio.sourceforge.net/bowtie2/index.shtml) with the parameter specified in the `config.yaml`.
 3. Convert the SAM file to BAM file and sort using [samtools](http://www.htslib.org/).
 4. Remove duplicates using [Picard](https://broadinstitute.github.io/picard/) `MarkDuplicates` with the parameter `--REMOVE_DUPLICATES true`.
-5. Make fingerprint plots using [deepTools](https://deeptools.readthedocs.io/en/develop/) `plotFingerprint` with the parameter `--minMappingQuality 30 --skipZeros --numberOfSamples 50000 --binSize 10000`.
-6. Make bigWig files using [deepTools](https://deeptools.readthedocs.io/en/develop/) `bamCoverage` with the parameter `--binSize 1 --normalizeUsing CPM`.
-7. Make summary statistics using [MultiQC](https://multiqc.info/).
+5. Collect metrics using [Picard](https://broadinstitute.github.io/picard/) `CollectInsertSizeMetrics`.
+6. Make fingerprint plots using [deepTools](https://deeptools.readthedocs.io/en/develop/) `plotFingerprint` with the parameter `--minMappingQuality 30 --skipZeros --numberOfSamples 50000 --binSize 10000`.
+7. Make bigWig files using [deepTools](https://deeptools.readthedocs.io/en/develop/) `bamCoverage` with the parameter `--binSize 1 --normalizeUsing CPM`.
+8. Make summary statistics using [MultiQC](https://multiqc.info/).
 
 ## Usage
 
