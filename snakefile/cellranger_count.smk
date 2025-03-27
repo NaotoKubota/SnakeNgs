@@ -107,7 +107,7 @@ rule count:
 
 rule multiqc:
     container:
-        "docker://multiqc/multiqc:v1.27"
+        "docker://multiqc/multiqc:v1.28"
     input:
         expand("count/{sample}/outs/web_summary.html", sample=samples)
     output:

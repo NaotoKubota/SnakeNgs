@@ -55,4 +55,4 @@ sample3 path/to/sample3_L001_R1.fastq.gz,path/to/sample3_L002_R1.fastq.gz path/t
 ## Docker image used in the workflow
 
 - [litd/docker-cellranger:v9.0.0](https://hub.docker.com/r/litd/docker-cellranger)
-- [multiqc/multiqc:v1.27](https://hub.docker.com/r/multiqc/multiqc)
+- [multiqc/multiqc:v1.28](https://hub.docker.com/r/multiqc/multiqc)

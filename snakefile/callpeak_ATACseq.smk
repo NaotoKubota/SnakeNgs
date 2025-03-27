@@ -55,7 +55,7 @@ rule macs2:
 
 rule multiqc:
     container:
-        "docker://multiqc/multiqc:v1.25"
+        "docker://multiqc/multiqc:v1.28"
     input:
         macs2log = expand("macs2/{sample}/{sample}_peaks.xls", sample = samples)
     output:
