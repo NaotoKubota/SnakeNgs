@@ -2,6 +2,16 @@
 
 All notable changes to this SnakeNgs project will be documented in this file.
 
+## [v0.3.1] - 2025-??-??
+
+### Changed
+
+- Use `multiqc/multiqc:v1.28` image for MultiQC.
+
+### Deprecated
+
+- `ngsFetch` is deprecated and will be removed in the next version. Please use [ngsfetch](https://github.com/NaotoKubota/ngsfetch) instead.
+
 ## [v0.3.0] - 2025-03-07
 
 ### Added
