@@ -24,13 +24,10 @@ snakemake -s /path/to/SnakeNgs/snakefile/preprocessing_RNAseq.smk \
 
 - [Installation](installation.md)
 - Tutorial
-    - [Fetching public NGS data](tutorial/Fetching.md)
     - [QC and mapping for RNA-seq](tutorial/RNAseq_preprocessing.md)
     - [UMI count from single-nucleus RNA-seq](tutorial/snRNAseq_count.md)
     - [QC, mapping, peak calling for ChIP-seq/ATAC-seq](tutorial/ChIP-ATAC_preprocessing_callpeak.md)
 - Usage
-    - Fetching
-        - [ngsFetch](usage/ngsFetch.md)
     - RNA-seq
         - [preprocessing_RNAseq.smk](usage/preprocessing_RNAseq.md)
         - [preprocessing_RNAseq_single.smk](usage/preprocessing_RNAseq_single.md)
