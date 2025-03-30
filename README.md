@@ -30,10 +30,10 @@ snakemake -s /path/to/SnakeNgs/snakefile/preprocessing_RNAseq.smk \
 
 That's it! You can find the detailed usage of each pipeline in the [documentation](https://naotokubota.github.io/SnakeNgs/).
 
+## Workflow
+
 > [!NOTE]
 > `ngsFetch` has been deprecated. Please use [ngsfetch](https://github.com/NaotoKubota/ngsfetch) instead to fetch metadata and fastq files.
-
-## Workflow
 
 - RNA-seq
 	- [preprocessing_RNAseq.smk](https://naotokubota.github.io/SnakeNgs/usage/preprocessing_RNAseq)
