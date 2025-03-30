@@ -65,3 +65,11 @@ That's it! You can find the detailed usage of each pipeline in the [documentatio
 ## Documentation
 
 You can learn how to use each pipeline by visiting the [documentation](https://naotokubota.github.io/SnakeNgs/).
+
+## Contributing
+
+Thank you for wanting to improve SnakeNgs! If you have any bugs or questions, feel free to [open an issue](https://github.com/NaotoKubota/SnakeNgs/issues) or pull request.
+
+## Authors
+
+- Naoto Kubota ([0000-0003-0612-2300](https://orcid.org/0000-0003-0612-2300))
