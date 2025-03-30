@@ -2,7 +2,7 @@
 
 All notable changes to this SnakeNgs project will be documented in this file.
 
-## [v0.3.1] - 2025-??-??
+## [v0.3.1] - 2025-03-30
 
 ### Changed
 
