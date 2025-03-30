@@ -144,7 +144,7 @@ rule bustools_inspect_filtered:
 
 rule multiqc:
 	container:
-		"docker://multiqc/multiqc:v1.27"
+		"docker://multiqc/multiqc:v1.28"
 	input:
 		inspect_filtered = expand("kb/inspect_filtered/{sample}/inspect.json", sample = samples)
 	output:
