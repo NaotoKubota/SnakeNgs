@@ -2,11 +2,13 @@
 
 All notable changes to this SnakeNgs project will be documented in this file.
 
-## [v0.3.1] - 2025-03-30
+## [v0.3.2] - 2025-03-30
 
 ### Changed
 
 - Use `multiqc/multiqc:v1.28` image for MultiQC.
+
+## [v0.3.1] - 2025-03-30
 
 ### Deprecated
 
