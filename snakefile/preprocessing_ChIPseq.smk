@@ -197,7 +197,7 @@ rule bigwig:
 
 rule multiqc:
     container:
-        "docker://multiqc/multiqc:v1.25"
+        "docker://multiqc/multiqc:v1.28"
     input:
         json = expand("fastp/log/{sample}.json", sample = samples),
         bowtie2log = expand("log/bowtie2/{sample}.log", sample = samples),

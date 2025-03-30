@@ -93,4 +93,4 @@ Please refer to the [tutorial](../tutorial/snRNAseq_count.md) for more informati
 ## Docker image used in the workflow
 
 - [quay.io/biocontainers/kb-python:0.28.2--pyhdfd78af_2](https://quay.io/repository/biocontainers/kb-python)
-- [multiqc/multiqc:v1.27](https://hub.docker.com/r/multiqc/multiqc)
+- [multiqc/multiqc:v1.28](https://hub.docker.com/r/multiqc/multiqc)
