@@ -12,7 +12,8 @@ samples = config["samples"]
 rule all:
     input:
         bam = expand("minimap2/{sample}/{sample}_Aligned.out.bam", sample = samples),
-        bigwig = expand("bigwig/{sample}.bw", sample = samples)
+        bigwig = expand("bigwig/{sample}.bw", sample = samples),
+        isoquant_gene_counts = "isoquant/OUT/OUT.transcript_model_grouped_tpm.tsv"
 
 rule gtf2bed:
     container:
@@ -99,3 +100,33 @@ rule bigwig:
         "log/bamCoverage_{sample}.log"
     shell:
         "bamCoverage -b {input} -o {output} -p {threads} --binSize 1 >& {log}"
+
+rule isoquant:
+    container:
+        "docker://quay.io/biocontainers/isoquant:3.6.3--hdfd78af_0"
+    input:
+        bams = expand("minimap2/{sample}/{sample}_Aligned.out.bam", sample = samples),
+        gtf = config["gtf"]
+    output:
+        isoquant = "isoquant/OUT/OUT.transcript_model_grouped_tpm.tsv"
+    params:
+        labels = " ".join(samples)
+    threads:
+        workflow.cores
+    benchmark:
+        "benchmark/isoquant.txt"
+    log:
+        "log/isoquant.log"
+    shell:
+        """
+        isoquant.py \
+        --reference {config[genome_fasta]} \
+        --genedb {input.gtf} \
+        --bam {input.bams} \
+        --data_type {config[data_type]} \
+        --output isoquant \
+        --threads {threads} \
+        --labels {params.labels} \
+        {config[isoquant_options]} \
+        >& {log}
+        """
