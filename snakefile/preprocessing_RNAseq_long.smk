@@ -13,7 +13,8 @@ rule all:
     input:
         bam = expand("minimap2/{sample}/{sample}_Aligned.out.bam", sample = samples),
         bigwig = expand("bigwig/{sample}.bw", sample = samples),
-        isoquant_gene_counts = "isoquant/OUT/OUT.transcript_model_grouped_tpm.tsv"
+        isoquant_gene_counts = "isoquant/OUT/OUT.transcript_model_grouped_tpm.tsv",
+        multiqc = "multiqc/multiqc_report.html"
 
 rule gtf2bed:
     container:
@@ -31,6 +32,30 @@ rule gtf2bed:
     shell:
         """
         paftools.js gff2bed {input.gtf} > {output.annobed} 2> {log}
+        """
+
+rule qc:
+    wildcard_constraints:
+        sample = "|".join([re.escape(x) for x in samples])
+    container:
+        "docker://quay.io/biocontainers/sequali:0.12.0--py311haab0aaa_1"
+    input:
+        R1 = "fastq/{sample}.fastq.gz"
+    output:
+        json = "sequali/{sample}.fastq.gz.json",
+        html = "sequali/{sample}.fastq.gz.html"
+    threads:
+        2
+    benchmark:
+        "benchmark/sequali_{sample}.txt"
+    log:
+        "log/sequali_{sample}.log"
+    shell:
+        """
+        sequali \
+        --outdir sequali \
+        {input.R1} \
+        >& {log}
         """
 
 rule mapping:
@@ -129,4 +154,24 @@ rule isoquant:
         --labels {params.labels} \
         {config[isoquant_options]} \
         >& {log}
+        """
+
+rule multiqc:
+    container:
+        "docker://multiqc/multiqc:v1.28"
+    input:
+        json = expand("sequali/{sample}.fastq.gz.json", sample = samples)
+    output:
+        "multiqc/multiqc_report.html"
+    benchmark:
+        "benchmark/multiqc.txt"
+    log:
+        "log/multiqc.log"
+    shell:
+        """
+        rm -rf multiqc && \
+        mkdir -p multiqc/log && \
+        cp {input.json} multiqc/log && \
+        multiqc --config multiqc/multiqc_config.yaml -o multiqc/ multiqc/log >& {log} && \
+        rm -rf multiqc/log
         """
