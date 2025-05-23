@@ -172,6 +172,6 @@ rule multiqc:
         rm -rf multiqc && \
         mkdir -p multiqc/log && \
         cp {input.json} multiqc/log && \
-        multiqc --config multiqc/multiqc_config.yaml -o multiqc/ multiqc/log >& {log} && \
+        multiqc -o multiqc/ multiqc/log >& {log} && \
         rm -rf multiqc/log
         """
