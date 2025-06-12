@@ -2,6 +2,12 @@
 
 All notable changes to this SnakeNgs project will be documented in this file.
 
+## [v0.4.0] - 2025-??-??
+
+### Added
+
+- `preprocessing_RNAseq_long.smk`: Long-read RNA-seq preprocessing pipeline.
+
 ## [v0.3.2] - 2025-03-30
 
 ### Changed
