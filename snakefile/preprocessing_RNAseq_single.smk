@@ -13,6 +13,18 @@ star_index = config["star_index"]
 samples = config["samples"]
 gtf = config["gtf"]
 
+# Function to check if chrosome length is over 512 Mbp
+def check_chromosome_length(star_index):
+    chromosome_length_file = f"{star_index}/chrLength.txt" # This file should contain chromosome lengths per line in the format: length1
+    if not os.path.exists(chromosome_length_file):
+        raise FileNotFoundError(f"Chromosome length file not found: {chromosome_length_file}")
+    with open(chromosome_length_file, 'r') as f:
+        for line in f:
+            length = int(line.strip())
+            if length > 512 * 10**6:  # 512 Mbp
+                return True
+    return False
+
 rule all:
     input:
         multiqc = "multiqc/multiqc_report.html",
@@ -75,6 +87,8 @@ rule sort:
         "star/{sample}/{sample}_Aligned.out.sam"
     output:
         "star/{sample}/{sample}_Aligned.out.bam"
+    params:
+        index_option = "-c" if check_chromosome_length(star_index) else "-b"
     threads:
         8
     benchmark:
@@ -83,7 +97,7 @@ rule sort:
         "log/samtools_{sample}.log"
     shell:
         "samtools sort -@ {threads} -O bam -o {output} {input} >& {log} && "
-        "samtools index {output} && "
+        "samtools index {params.index_option} {output} && "
         "rm -rf {input}"
 
 rule bigwig:
