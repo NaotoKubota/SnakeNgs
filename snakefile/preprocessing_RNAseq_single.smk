@@ -132,7 +132,7 @@ rule makeRefFlat:
     log:
         "log/refFlat.log"
     shell:
-        "gtfToGenePred -genePredExt -geneNameAsName2 {gtf} refFlat.tmp >& {log} && "
+        "gtfToGenePred -genePredExt -ignoreGroupsWithoutExons -geneNameAsName2 {gtf} refFlat.tmp >& {log} && "
         "cat refFlat.tmp | awk -F'\t' -v OFS='\t' '$4 != 0{{print $12,$1,$2,$3,$4,$5,$6,$7,$8,$9,$10}}$4 == 0{{print $12,$1,$2,$3,1,$5,$6,$7,$8,$9,$10}}' > {output.refFlat} && "
         "rm -rf refFlat.tmp"
 
