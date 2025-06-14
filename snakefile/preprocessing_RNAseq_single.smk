@@ -133,7 +133,7 @@ rule makeRefFlat:
         "log/refFlat.log"
     shell:
         "gtfToGenePred -genePredExt -geneNameAsName2 {gtf} refFlat.tmp >& {log} && "
-        "cat refFlat.tmp | awk -F'\t' -v OFS='\t' '{{print $12,$1,$2,$3,$4,$5,$6,$7,$8,$9,$10}}' > {output.refFlat} && "
+        "cat refFlat.tmp | awk -F'\t' -v OFS='\t' '$4 != 0{{print $12,$1,$2,$3,$4,$5,$6,$7,$8,$9,$10}}$4 == 0{{print $12,$1,$2,$3,1,$5,$6,$7,$8,$9,$10}}' > {output.refFlat} && "
         "rm -rf refFlat.tmp"
 
 rule makeRibosomalInterval:
@@ -146,7 +146,9 @@ rule makeRibosomalInterval:
     shell:
         '''
         cat {star_index}/chrNameLength.txt | awk -F"\t" -v OFS="\t" '{{print "@SQ","SN:"$1,"LN:"$2}}' > {output.ribosomalInterval} && \
-        cat {gtf} | grep -e 'gene_type "rRNA"' -e 'gene_biotype "rRNA"' | awk -F"\t" -v OFS="\t" '$3 == "transcript"{{print $1,$4-1,$5,$7,$9}}' >> {output.ribosomalInterval}
+        cat {gtf} | grep -e 'gene_type "rRNA"' -e 'gene_biotype "rRNA"' | \
+        awk -F"\t" -v OFS="\t" '$3 == "transcript" && $4 != 1{{print $1,$4-1,$5,$7,$9}}$3 == "transcript" && $4 == 1{{print $1,$4,$5,$7,$9}}' \
+        >> {output.ribosomalInterval}
         '''
 
 rule CollectRnaSeqMetrics:
