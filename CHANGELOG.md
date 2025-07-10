@@ -8,6 +8,11 @@ All notable changes to this SnakeNgs project will be documented in this file.
 
 - `preprocessing_RNAseq_long.smk`: Long-read RNA-seq preprocessing pipeline.
 
+### Changed
+
+- `preprocessing_RNAseq.smk` and `preprocessing_RNAseq_single.smk`: 
+  - Check chromosome lengths before indexing the bam file and make .csi index if a chromosome is over 512 Mbp.
+
 ## [v0.3.2] - 2025-03-30
 
 ### Changed
