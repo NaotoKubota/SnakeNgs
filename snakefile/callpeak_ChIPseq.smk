@@ -99,10 +99,10 @@ rule multiqc:
     log:
         "log/multiqc_callpeak.log"
     shell:
-        "rm -rf multiqc && "
-        "mkdir -p multiqc/log && "
-        "cp {input.macs2log} multiqc/log && "
-        "multiqc -o multiqc_callpeak/ multiqc/log >& {log} && "
-        "rm -rf multiqc/log"
+        "rm -rf multiqc_callpeak/ && "
+        "mkdir -p multiqc_callpeak/log && "
+        "cp {input.macs2log} multiqc_callpeak/log && "
+        "multiqc -o multiqc_callpeak/ multiqc_callpeak/log >& {log} && "
+        "rm -rf multiqc_callpeak/log"
 
 ## DON'T CHANGE ABOVE THIS LINE ##

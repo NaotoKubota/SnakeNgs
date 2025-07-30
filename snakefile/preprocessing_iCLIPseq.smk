@@ -105,7 +105,8 @@ rule markdup:
 		"-I {input} -O {output} "
 		"-M {log} "
 		"--REMOVE_DUPLICATES true "
-		"--TMP_DIR star/tmp && "
+		"--TMP_DIR star/tmp "
+        ">& {log} && "
 		"rm -rf star/*_Aligned.bam.bai"
 
 rule index:

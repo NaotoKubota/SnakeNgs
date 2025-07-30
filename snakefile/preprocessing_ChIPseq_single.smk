@@ -106,7 +106,8 @@ rule markdup:
         "-I {input} -O {output} "
         "-M {log} "
         "--REMOVE_DUPLICATES true "
-        "--TMP_DIR bowtie2/tmp && "
+        "--TMP_DIR bowtie2/tmp "
+        ">& {log} && "
         "rm -rf bowtie2/*.sort.bam.bai"
 
 rule index:
