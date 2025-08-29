@@ -11,29 +11,30 @@ theme:
   palette:
     # Palette toggle for automatic mode
     - media: "(prefers-color-scheme)"
-      primary: amber
-      accent: amber
+      primary: blue
+      accent: teal
       toggle:
         icon: material/brightness-auto
         name: Switch to light mode
     # Palette toggle for light mode
     - media: "(prefers-color-scheme: light)"
       scheme: default
-      primary: amber
-      accent: amber
+      primary: blue
+      accent: teal
       toggle:
         icon: material/brightness-7
         name: Switch to dark mode
     # Palette toggle for dark mode
     - media: "(prefers-color-scheme: dark)"
       scheme: slate
-      primary: amber
-      accent: amber
+      primary: blue
+      accent: teal
       toggle:
         icon: material/brightness-4
         name: Switch to light mode
   font:
     text: Roboto
+    code: Roboto Mono
   language: en
   features:
     - search.suggest
@@ -51,8 +52,6 @@ markdown_extensions:
   - toc:
       permalink: true
   - admonition
-  - codehilite
-  - extra
   - pymdownx.highlight:
       linenums: true
       linenums_style: pymdownx.inline
@@ -65,15 +64,15 @@ markdown_extensions:
 
 extra:
   social:
-    - type: "github"
-      icon: fontawesome/brands/github
+    - icon: fontawesome/brands/github
       link: "https://github.com/NaotoKubota"
-    - type: "docker"
-      icon: fontawesome/brands/docker
+    - icon: fontawesome/brands/docker
       link: "https://hub.docker.com/u/naotokubota"
-    - type: "twitter"
-      icon: fontawesome/brands/x-twitter
+    - icon: fontawesome/brands/x-twitter
       link: "https://twitter.com/naoto_kubota"
+
+extra_css:
+  - stylesheets/extra.css
 
 edit_uri: edit/main/docs/
 
