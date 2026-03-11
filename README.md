@@ -5,6 +5,7 @@
 [![GitHub Release](https://img.shields.io/github/v/release/NaotoKubota/SnakeNgs?style=flat)](https://github.com/NaotoKubota/SnakeNgs/releases)
 [![GitHub Release Date](https://img.shields.io/github/release-date/NaotoKubota/SnakeNgs)](https://github.com/NaotoKubota/SnakeNgs/releases)
 [![Create Release](https://github.com/NaotoKubota/SnakeNgs/actions/workflows/release.yaml/badge.svg)](https://github.com/NaotoKubota/SnakeNgs/actions/workflows/release.yaml)
+[![Test Snakefiles](https://github.com/NaotoKubota/SnakeNgs/actions/workflows/test-snakefiles.yaml/badge.svg)](https://github.com/NaotoKubota/SnakeNgs/actions/workflows/test-snakefiles.yaml)
 
 Pipelines for NGS data analysis written in [Snakemake](https://snakemake.readthedocs.io/en/stable/). Each pipeline is designed to be executed with [Singularity](https://sylabs.io/singularity/) containers.
 
