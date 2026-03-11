@@ -1,0 +1,89 @@
+name: Test Snakefiles (dry-run)
+
+on:
+  push:
+    branches: [develop]
+  pull_request:
+    branches: [develop]
+
+jobs:
+  dry-run-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install dependencies
+        run: pip install snakemake pandas
+
+      - name: Generate test data
+        run: bash .github/scripts/generate_test_data.sh
+
+      - name: "Test: preprocessing_RNAseq (paired)"
+        run: snakemake --snakefile snakefile/preprocessing_RNAseq.smk --configfile tests/testdata/configs/config_preprocessing_RNAseq_paired.yaml --dry-run --cores 1
+
+      - name: "Test: preprocessing_RNAseq (single)"
+        run: snakemake --snakefile snakefile/preprocessing_RNAseq.smk --configfile tests/testdata/configs/config_preprocessing_RNAseq_single.yaml --dry-run --cores 1
+
+      - name: "Test: preprocessing_RNAseq_long"
+        run: snakemake --snakefile snakefile/preprocessing_RNAseq_long.smk --configfile tests/testdata/configs/config_preprocessing_RNAseq_long.yaml --dry-run --cores 1
+
+      - name: "Test: preprocessing_ChIPseq (paired)"
+        run: snakemake --snakefile snakefile/preprocessing_ChIPseq.smk --configfile tests/testdata/configs/config_preprocessing_ChIPseq_paired.yaml --dry-run --cores 1
+
+      - name: "Test: preprocessing_ChIPseq (single)"
+        run: snakemake --snakefile snakefile/preprocessing_ChIPseq.smk --configfile tests/testdata/configs/config_preprocessing_ChIPseq_single.yaml --dry-run --cores 1
+
+      - name: "Test: preprocessing_CLIPseq (HITSCLIP)"
+        run: snakemake --snakefile snakefile/preprocessing_CLIPseq.smk --configfile tests/testdata/configs/config_preprocessing_CLIPseq_HITSCLIP.yaml --dry-run --cores 1
+
+      - name: "Test: preprocessing_CLIPseq (iCLIPseq)"
+        run: snakemake --snakefile snakefile/preprocessing_CLIPseq.smk --configfile tests/testdata/configs/config_preprocessing_CLIPseq_iCLIPseq.yaml --dry-run --cores 1
+
+      - name: "Test: callpeak_ATACseq"
+        run: snakemake --snakefile snakefile/callpeak_ATACseq.smk --configfile tests/testdata/configs/config_callpeak_ATACseq.yaml --dry-run --cores 1
+
+      - name: "Test: callpeak_ChIPseq"
+        run: snakemake --snakefile snakefile/callpeak_ChIPseq.smk --configfile tests/testdata/configs/config_callpeak_ChIPseq.yaml --dry-run --cores 1
+
+      - name: "Test: differential_ATACseq"
+        run: snakemake --snakefile snakefile/differential_ATACseq.smk --configfile tests/testdata/configs/config_differential_ATACseq.yaml --dry-run --cores 1
+
+      - name: "Test: footprinting_ATACseq"
+        run: snakemake --snakefile snakefile/footprinting_ATACseq.smk --configfile tests/testdata/configs/config_footprinting_ATACseq.yaml --dry-run --cores 1
+
+      - name: "Test: footprinting_timeseries_ATACseq"
+        run: snakemake --snakefile snakefile/footprinting_timeseries_ATACseq.smk --configfile tests/testdata/configs/config_footprinting_timeseries_ATACseq.yaml --dry-run --cores 1
+
+      - name: "Test: bam2cram"
+        run: snakemake --snakefile snakefile/bam2cram.smk --configfile tests/testdata/configs/config_bam2cram.yaml --directory tests/testdata/workdirs/bam2cram --dry-run --cores 1
+
+      - name: "Test: STARsolo"
+        run: snakemake --snakefile snakefile/STARsolo.smk --configfile tests/testdata/configs/config_STARsolo.yaml --dry-run --cores 1
+
+      - name: "Test: cellranger_count"
+        run: snakemake --snakefile snakefile/cellranger_count.smk --configfile tests/testdata/configs/config_cellranger_count.yaml --dry-run --cores 1
+
+      - name: "Test: kb-nac"
+        run: snakemake --snakefile snakefile/kb-nac.smk --configfile tests/testdata/configs/config_kb_nac.yaml --dry-run --cores 1
+
+      - name: "Test: ONT_plasmid_assembly"
+        run: snakemake --snakefile snakefile/ONT_plasmid_assembly.smk --configfile tests/testdata/configs/config_ONT_plasmid_assembly.yaml --dry-run --cores 1
+
+      - name: "Test: Whippet"
+        run: snakemake --snakefile snakefile/Whippet.smk --configfile tests/testdata/configs/config_Whippet.yaml --dry-run --cores 1
+
+      - name: "Test: SUPPA2_diffSplice"
+        run: snakemake --snakefile snakefile/SUPPA2_diffSplice.smk --configfile tests/testdata/configs/config_SUPPA2_diffSplice.yaml --dry-run --cores 1
+
+      - name: "Test: LeafCutter"
+        run: snakemake --snakefile snakefile/LeafCutter.smk --configfile tests/testdata/configs/config_LeafCutter.yaml --dry-run --cores 1
+
+      - name: "Test: rMATS"
+        run: snakemake --snakefile snakefile/rMATS.smk --configfile tests/testdata/configs/config_rMATS.yaml --dry-run --cores 1
+
+      - name: "Test: MAJIQ"
+        run: snakemake --snakefile snakefile/MAJIQ.smk --configfile tests/testdata/configs/config_MAJIQ.yaml --dry-run --cores 1

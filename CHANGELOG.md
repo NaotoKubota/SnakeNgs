@@ -10,8 +10,18 @@ All notable changes to this SnakeNgs project will be documented in this file.
 
 ### Changed
 
-- `preprocessing_RNAseq.smk` and `preprocessing_RNAseq_single.smk`: 
+- `preprocessing_RNAseq.smk`:
+  - Merged `preprocessing_RNAseq.smk` and `preprocessing_RNAseq_single.smk` into a single file with `layout` config parameter (`"paired"` or `"single"`).
+  - Extracted common rules (`sort`, `bigwig`, `makeRefFlat`, `makeRibosomalInterval`, `CollectRnaSeqMetrics`) into `snakefile/common/`.
   - Check chromosome lengths before indexing the bam file and make .csi index if a chromosome is over 512 Mbp.
+- `preprocessing_ChIPseq.smk`:
+  - Merged `preprocessing_ChIPseq.smk` and `preprocessing_ChIPseq_single.smk` into a single file with `layout` config parameter (`"paired"` or `"single"`).
+  - Extracted common rules (`sort`, `markdup`, `index`, `plotFingerprint`, `bigwig`) into `snakefile/common/`.
+
+### Removed
+
+- `preprocessing_RNAseq_single.smk`: Merged into `preprocessing_RNAseq.smk`.
+- `preprocessing_ChIPseq_single.smk`: Merged into `preprocessing_ChIPseq.smk`.
 
 ## [v0.3.2] - 2025-03-30
 

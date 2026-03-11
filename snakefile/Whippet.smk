@@ -45,6 +45,8 @@ def read_experiment_table(experiment_table):
 
 samples, samples_Ref, samples_Alt, sample_fastq_dict = read_experiment_table(config['experiment_table'])
 
+include: "common/containers.smk"
+
 rule all:
     input:
         psi = expand("quant/all/{sample}.psi.gz", sample = samples),
@@ -54,7 +56,7 @@ rule quant:
     wildcard_constraints:
         sample = "|".join(samples)
     container:
-        "docker://cloxd/whippet:1.6.1"
+        CONTAINERS["whippet"]
     input:
         R1 = lambda wildcards: sample_fastq_dict[wildcards.sample]['R1'],
         R2 = lambda wildcards: sample_fastq_dict[wildcards.sample]['R2'],
@@ -81,7 +83,7 @@ rule quant:
 
 rule delta:
     container:
-        "docker://cloxd/whippet:1.6.1"
+        CONTAINERS["whippet"]
     input:
         psi_all = expand("quant/all/{sample}.psi.gz", sample = samples)
     output:

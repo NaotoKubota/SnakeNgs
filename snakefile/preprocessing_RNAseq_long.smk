@@ -9,6 +9,11 @@ Usage:
 workdir: config["workdir"]
 samples = config["samples"]
 
+wildcard_constraints:
+    sample = "|".join([re.escape(x) for x in samples])
+
+include: "common/containers.smk"
+
 rule all:
     input:
         bam = expand("minimap2/{sample}/{sample}_Aligned.out.bam", sample = samples),
@@ -18,7 +23,7 @@ rule all:
 
 rule gtf2bed:
     container:
-        "docker://quay.io/biocontainers/minimap2:2.28--h577a1d6_4"
+        CONTAINERS["minimap2"]
     input:
         gtf = config["gtf"]
     output:
@@ -35,10 +40,8 @@ rule gtf2bed:
         """
 
 rule qc:
-    wildcard_constraints:
-        sample = "|".join([re.escape(x) for x in samples])
     container:
-        "docker://quay.io/biocontainers/sequali:0.12.0--py311haab0aaa_1"
+        CONTAINERS["sequali"]
     input:
         R1 = "fastq/{sample}.fastq.gz"
     output:
@@ -59,10 +62,8 @@ rule qc:
         """
 
 rule mapping:
-    wildcard_constraints:
-        sample = "|".join([re.escape(x) for x in samples])
     container:
-        "docker://quay.io/biocontainers/minimap2:2.28--h577a1d6_4"
+        CONTAINERS["minimap2"]
     input:
         R1 = "fastq/{sample}.fastq.gz",
         annobed = "annotation/anno.bed"
@@ -89,10 +90,8 @@ rule mapping:
         """
 
 rule sort:
-    wildcard_constraints:
-        sample = "|".join([re.escape(x) for x in samples])
     container:
-        "docker://quay.io/biocontainers/samtools:1.18--h50ea8bc_1"
+        CONTAINERS["samtools"]
     input:
         "minimap2/{sample}/{sample}_Aligned.out.sam"
     output:
@@ -109,10 +108,8 @@ rule sort:
         "rm -rf {input}"
 
 rule bigwig:
-    wildcard_constraints:
-        sample = "|".join([re.escape(x) for x in samples])
     container:
-        "docker://quay.io/biocontainers/deeptools:3.5.4--pyhdfd78af_1"
+        CONTAINERS["deeptools"]
     input:
         "minimap2/{sample}/{sample}_Aligned.out.bam"
     output:
@@ -128,7 +125,7 @@ rule bigwig:
 
 rule isoquant:
     container:
-        "docker://quay.io/biocontainers/isoquant:3.6.3--hdfd78af_0"
+        CONTAINERS["isoquant"]
     input:
         bams = expand("minimap2/{sample}/{sample}_Aligned.out.bam", sample = samples),
         gtf = config["gtf"]
@@ -158,7 +155,7 @@ rule isoquant:
 
 rule multiqc:
     container:
-        "docker://multiqc/multiqc:v1.28"
+        CONTAINERS["multiqc"]
     input:
         json = expand("sequali/{sample}.fastq.gz.json", sample = samples)
     output:

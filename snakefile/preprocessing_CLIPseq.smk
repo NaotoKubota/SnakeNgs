@@ -1,9 +1,8 @@
-
 '''
-Snakefile for HITS-CLIP preprocessing
+Snakefile for CLIP-seq preprocessing (HITS-CLIP, iCLIP-seq, etc.)
 
 Usage:
-    snakemake -s preprocessing_HITSCLIP.smk --configfile <path to config.yaml> --cores <int> --use-singularity
+    snakemake -s preprocessing_CLIPseq.smk --configfile <path to config.yaml> --cores <int> --use-singularity
 '''
 
 ## DON'T CHANGE BELOW THIS LINE ##
@@ -11,25 +10,32 @@ Usage:
 workdir: config["workdir"]
 star_index = config["star_index"]
 samples = config["samples"]
+fastp_args = config["fastp_args"]
+outFilterMultimapNmax = config["outFilterMultimapNmax"]
+normalize_bigwig = config.get("normalize_bigwig", False)
+
+include: "common/containers.smk"
+
+wildcard_constraints:
+    sample = "|".join([re.escape(x) for x in samples])
 
 rule all:
     input:
-        multiqc = "multiqc/multiqc_report.html",
+        multiqc = "multiqc_preprocessing/multiqc_report.html",
         bam = expand("star/{sample}/{sample}_Aligned.rmdup.out.bam", sample = samples),
         bigwig = expand("bigwig/{sample}.bw", sample = samples)
 
 rule qc:
-    wildcard_constraints:
-        sample = "|".join([re.escape(x) for x in samples])
     container:
-        "docker://quay.io/biocontainers/fastp:0.23.4--hadf994f_2"
+        CONTAINERS["fastp"]
     input:
         R1 = "fastq/{sample}.fastq.gz"
     output:
         R1 = "fastp/{sample}.fastq.gz",
         json = "fastp/log/{sample}.json"
     params:
-        html = "fastp/log/{sample}.html"
+        html = "fastp/log/{sample}.html",
+        fastp_args = fastp_args
     threads:
         8
     benchmark:
@@ -38,43 +44,40 @@ rule qc:
         "log/fastp_{sample}.log"
     shell:
         "fastp -i {input.R1} "
-        "-o {output.R1} -w {threads} -l 20 -3 --trim_front1 5 "
+        "-o {output.R1} -w {threads} {params.fastp_args} "
         "-h {params.html} -j {output.json} >& {log}"
 
 rule mapping:
-    wildcard_constraints:
-        sample = "|".join([re.escape(x) for x in samples])
     container:
-        "docker://quay.io/biocontainers/star:2.7.11a--h0033a41_0"
+        CONTAINERS["star"]
     input:
         R1 = "fastp/{sample}.fastq.gz"
     output:
         sam = "star/{sample}/{sample}_Aligned.out.sam",
         log = "star/{sample}/{sample}_Log.final.out"
     params:
-        outdir = "star/{sample}/{sample}_"
+        outdir = "star/{sample}/{sample}_",
+        outFilterMultimapNmax = outFilterMultimapNmax
     threads:
-        1000
+        workflow.cores
     benchmark:
         "benchmark/star_{sample}.txt"
     log:
         "log/star_{sample}.log"
     shell:
         "STAR --runThreadN {threads} --genomeDir {star_index} "
-        "--outFilterMultimapNmax 100 "
+        "--outFilterMultimapNmax {params.outFilterMultimapNmax} "
         "--readFilesIn {input.R1} --readFilesCommand zcat --outFileNamePrefix {params.outdir} >& {log}"
 
 rule sort:
-    wildcard_constraints:
-        sample = "|".join([re.escape(x) for x in samples])
     container:
-        "docker://quay.io/biocontainers/samtools:1.18--h50ea8bc_1"
+        CONTAINERS["samtools"]
     input:
         "star/{sample}/{sample}_Aligned.out.sam"
     output:
         "star/{sample}/{sample}_Aligned.out.bam"
     threads:
-        8
+        workflow.cores / 4
     benchmark:
         "benchmark/samtools_{sample}.txt"
     log:
@@ -85,10 +88,8 @@ rule sort:
         "rm -rf {input}"
 
 rule markdup:
-    wildcard_constraints:
-        sample = "|".join([re.escape(x) for x in samples])
     container:
-        "docker://quay.io/biocontainers/picard:3.1.1--hdfd78af_0"
+        CONTAINERS["picard"]
     input:
         "star/{sample}/{sample}_Aligned.out.bam"
     output:
@@ -109,10 +110,8 @@ rule markdup:
         "rm -rf star/*.sort.bam.bai"
 
 rule index:
-    wildcard_constraints:
-        sample = "|".join([re.escape(x) for x in samples])
     container:
-        "docker://quay.io/biocontainers/samtools:1.18--h50ea8bc_1"
+        CONTAINERS["samtools"]
     input:
         "star/{sample}/{sample}_Aligned.rmdup.out.bam"
     output:
@@ -121,15 +120,15 @@ rule index:
         "samtools index {input}"
 
 rule bigwig:
-    wildcard_constraints:
-        sample = "|".join([re.escape(x) for x in samples])
     container:
-        "docker://quay.io/biocontainers/deeptools:3.5.4--pyhdfd78af_1"
+        CONTAINERS["deeptools"]
     input:
         bam = "star/{sample}/{sample}_Aligned.rmdup.out.bam",
         bai = "star/{sample}/{sample}_Aligned.rmdup.out.bam.bai"
     output:
         "bigwig/{sample}.bw"
+    params:
+        normalize = "--normalizeUsing CPM" if normalize_bigwig else ""
     threads:
         8
     benchmark:
@@ -137,26 +136,26 @@ rule bigwig:
     log:
         "log/bamCoverage_{sample}.log"
     shell:
-        "bamCoverage -b {input.bam} -o {output} -p {threads} --binSize 1 >& {log}"
+        "bamCoverage -b {input.bam} -o {output} -p {threads} --binSize 1 {params.normalize} >& {log}"
 
 rule multiqc:
     container:
-        "docker://multiqc/multiqc:v1.28"
+        CONTAINERS["multiqc"]
     input:
         json = expand("fastp/log/{sample}.json", sample = samples),
         starlog = expand("star/{sample}/{sample}_Log.final.out", sample = samples),
-        picardlog = expand("log/picard_{sample}.log", sample = samples),
+        picardlog = expand("log/picard_{sample}.log", sample = samples)
     output:
-        "multiqc/multiqc_report.html"
+        "multiqc_preprocessing/multiqc_report.html"
     benchmark:
         "benchmark/multiqc.txt"
     log:
         "log/multiqc.log"
     shell:
-        "rm -rf multiqc && "
-        "mkdir -p multiqc/log && "
-        "cp {input.json} {input.starlog} {input.picardlog} multiqc/log && "
-        "multiqc -o multiqc/ multiqc/log >& {log} && "
-        "rm -rf multiqc/log"
+        "rm -rf multiqc_preprocessing && "
+        "mkdir -p multiqc_preprocessing/log && "
+        "cp {input.json} {input.starlog} {input.picardlog} multiqc_preprocessing/log && "
+        "multiqc -o multiqc_preprocessing/ multiqc_preprocessing/log >& {log} && "
+        "rm -rf multiqc_preprocessing/log"
 
 ## DON'T CHANGE ABOVE THIS LINE ##

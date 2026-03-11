@@ -11,6 +11,11 @@ samples_dict = config["samples"]
 samples = list(samples_dict.keys())
 reference = config["reference"]
 
+include: "common/containers.smk"
+
+wildcard_constraints:
+    sample = "|".join([re.escape(x) for x in samples])
+
 rule all:
     input:
         expand("assembly/medaka/{sample}/consensus.fasta", sample=samples),
@@ -20,8 +25,6 @@ rule all:
         "multiqc/multiqc_report.html"
 
 rule concat_fastq:
-    wildcard_constraints:
-        sample = "|".join([re.escape(x) for x in samples])
     input:
         input_dir = lambda wildcards: samples_dict[wildcards.sample]
     output:
@@ -34,10 +37,8 @@ rule concat_fastq:
         '''
 
 rule qc:
-    wildcard_constraints:
-        sample = "|".join([re.escape(x) for x in samples])
     container:
-        "docker://quay.io/biocontainers/sequali:0.12.0--py311haab0aaa_1"
+        CONTAINERS["sequali"]
     input:
         fastq = "fastq/{sample}.fastq.gz"
     output:
@@ -58,10 +59,8 @@ rule qc:
         """
 
 rule flye:
-    wildcard_constraints:
-        sample = "|".join([re.escape(x) for x in samples])
     container:
-        "docker://staphb/flye:2.9.6"
+        CONTAINERS["flye"]
     input:
         fastq = "fastq/{sample}.fastq.gz"
     output:
@@ -86,10 +85,8 @@ rule flye:
         '''
 
 rule medaka_consensus:
-    wildcard_constraints:
-        sample = "|".join([re.escape(x) for x in samples])
     container:
-        "docker://ontresearch/medaka:shac4e11bfa4e65668b28739ba32edc3af12baf7574"
+        CONTAINERS["medaka"]
     input:
         fastq = "fastq/{sample}.fastq.gz",
         reference = reference
@@ -116,10 +113,8 @@ rule medaka_consensus:
         '''
 
 rule medaka_consensus_denovo:
-    wildcard_constraints:
-        sample = "|".join([re.escape(x) for x in samples])
     container:
-        "docker://ontresearch/medaka:shac4e11bfa4e65668b28739ba32edc3af12baf7574"
+        CONTAINERS["medaka"]
     input:
         fastq = "fastq/{sample}.fastq.gz",
         assembly_fasta = "assembly/flye/{sample}/assembly.fasta"
@@ -147,7 +142,7 @@ rule medaka_consensus_denovo:
 
 rule multiqc:
     container:
-        "docker://multiqc/multiqc:v1.28"
+        CONTAINERS["multiqc"]
     input:
         json = expand("sequali/{sample}.fastq.gz.json", sample = samples)
     output:

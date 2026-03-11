@@ -11,16 +11,19 @@ Usage:
 workdir: config["workdir"]
 samples = config["samples"]
 
+include: "common/containers.smk"
+
+wildcard_constraints:
+    sample = "|".join([re.escape(x) for x in samples])
+
 rule all:
     input:
         multiqc = "multiqc_callpeak/multiqc_report.html",
         xls = expand("macs2/{sample}/{sample}_peaks.xls", sample = samples)
 
 rule macs2:
-    wildcard_constraints:
-        sample = "|".join([re.escape(x) for x in samples])
     container:
-        "docker://quay.io/biocontainers/macs2:2.2.9.1--py39hf95cd2a_0"
+        CONTAINERS["macs2"]
     input:
         bam = "bowtie2/{sample}.sort.rmdup.bam"
     output:
@@ -55,7 +58,7 @@ rule macs2:
 
 rule multiqc:
     container:
-        "docker://multiqc/multiqc:v1.28"
+        CONTAINERS["multiqc"]
     input:
         macs2log = expand("macs2/{sample}/{sample}_peaks.xls", sample = samples)
     output:

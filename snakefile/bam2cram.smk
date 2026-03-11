@@ -15,16 +15,19 @@ def get_samples(bam_list):
 
 samples = get_samples(config["bam_list"])
 
+wildcard_constraints:
+    sample = "|".join([re.escape(x) for x in samples])
+
+include: "common/containers.smk"
+
 rule all:
     input:
         cram = expand("{sample}.cram", sample = samples),
         cram_index = expand("{sample}.cram.crai", sample = samples)
 
 rule bam2cram:
-    wildcard_constraints:
-        sample = "|".join([re.escape(x) for x in samples])
     container:
-        "docker://quay.io/biocontainers/samtools:1.18--h50ea8bc_1"
+        CONTAINERS["samtools"]
     input:
         bam = "{sample}.bam"
     output:
@@ -38,10 +41,8 @@ rule bam2cram:
         """
 
 rule cram_index:
-    wildcard_constraints:
-        sample = "|".join([re.escape(x) for x in samples])
     container:
-        "docker://quay.io/biocontainers/samtools:1.18--h50ea8bc_1"
+        CONTAINERS["samtools"]
     input:
         cram = "{sample}.cram"
     output:

@@ -28,6 +28,8 @@ def get_bam_list(experiment_table):
 
 Ref_bam, Alt_bam = get_bam_list(config['experiment_table'])
 
+include: "common/containers.smk"
+
 rule all:
     input:
         summary = "results/summary.txt"
@@ -51,7 +53,7 @@ rule makeRmatsInput:
 
 rule rmats:
     container:
-        "docker://xinglab/rmats:v4.3.0"
+        CONTAINERS["rmats"]
     input:
         bam_Ref_list = "input/bam_Ref.txt",
         bam_Alt_list = "input/bam_Alt.txt"

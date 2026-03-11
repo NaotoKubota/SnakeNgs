@@ -21,6 +21,11 @@ experiment_dict = load_experiment(config["general"]["experiment_table"])
 
 workdir: config["general"]["workdir"]
 
+include: "common/containers.smk"
+
+wildcard_constraints:
+    sample = "|".join(experiment_dict)
+
 rule all:
     input:
         multiqc = "multiqc_callpeak/multiqc_report.html",
@@ -28,10 +33,8 @@ rule all:
         bigwig = expand("macs2/{sample}/{sample}_treat_pileup.bw", sample = experiment_dict)
 
 rule macs2:
-    wildcard_constraints:
-        sample = "|".join(experiment_dict)
     container:
-        "docker://quay.io/biocontainers/macs2:2.2.9.1--py39hf95cd2a_0"
+        CONTAINERS["macs2"]
     input:
         target = lambda wildcards: experiment_dict[wildcards.sample]["target"],
         control = lambda wildcards: experiment_dict[wildcards.sample]["control"]
@@ -66,10 +69,8 @@ rule macs2:
         "fi"
 
 rule bedgraphtobigwig:
-    wildcard_constraints:
-        sample = "|".join(experiment_dict)
     container:
-        "docker://quay.io/biocontainers/ucsc-bedgraphtobigwig:445--h954228d_0"
+        CONTAINERS["ucsc_bedgraphtobigwig"]
     input:
         bedgraph = "macs2/{sample}/{sample}_treat_pileup.bdg"
     output:
@@ -89,7 +90,7 @@ rule bedgraphtobigwig:
 
 rule multiqc:
     container:
-        "docker://multiqc/multiqc:v1.28"
+        CONTAINERS["multiqc"]
     input:
         macs2log = expand("macs2/{sample}/{sample}_peaks.xls", sample = experiment_dict)
     output:

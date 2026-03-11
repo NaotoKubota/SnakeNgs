@@ -25,6 +25,12 @@ bams = [experiment_dict[x]["bam"] for x in experiment_dict]
 peaks = [experiment_dict[x]["peak"] for x in experiment_dict]
 groups = ["Ref", "Alt"]
 
+include: "common/containers.smk"
+
+wildcard_constraints:
+    sample = "|".join([re.escape(x) for x in samples] + ["Ref", "Alt"]),
+    merge_group = "|".join([re.escape(x) for x in groups])
+
 rule all:
     input:
         footprints_bw = expand("TOBIAS/ATACorrect/{sample}/{sample}.sort.rmdup_footprints.bw", sample = samples + ["Ref", "Alt"]),
@@ -32,7 +38,7 @@ rule all:
 
 rule merge_peaks:
     container:
-        "docker://quay.io/biocontainers/bedtools:2.24--1"
+        CONTAINERS["bedtools"]
     input:
         expand("{peak}", peak = peaks)
     output:
@@ -47,10 +53,8 @@ rule merge_peaks:
         '''
 
 rule merge_bam:
-    wildcard_constraints:
-        merge_group = "|".join([re.escape(x) for x in groups])
     container:
-        "docker://quay.io/biocontainers/samtools:1.18--h50ea8bc_1"
+        CONTAINERS["samtools"]
     input:
         bams = lambda wildcards: expand("{bam}", bam = [experiment_dict[x]["bam"] for x in experiment_dict if experiment_dict[x]["group"] == str(wildcards.merge_group)])
     output:
@@ -71,10 +75,8 @@ rule merge_bam:
         '''
 
 rule ATACorrect:
-    wildcard_constraints:
-        sample = "|".join([re.escape(x) for x in samples] + ["Ref", "Alt"])
     container:
-        "docker://quay.io/biocontainers/tobias:0.16.0--py38h24c8ff8_0"
+        CONTAINERS["tobias"]
     input:
         bam = lambda wildcards: experiment_dict[wildcards.sample]["bam"] if wildcards.sample in samples else str(wildcards.sample) + ".sort.rmdup.bam",
         peaks = "merged_peaks.bed"
@@ -101,10 +103,8 @@ rule ATACorrect:
         '''
 
 rule FootprintScores:
-    wildcard_constraints:
-        sample = "|".join([re.escape(x) for x in samples] + ["Ref", "Alt"])
     container:
-        "docker://quay.io/biocontainers/tobias:0.16.0--py38h24c8ff8_0"
+        CONTAINERS["tobias"]
     input:
         corrected_bw = "TOBIAS/ATACorrect/{sample}/{sample}.sort.rmdup_corrected.bw",
         peaks = "merged_peaks.bed"
@@ -128,7 +128,7 @@ rule FootprintScores:
 
 rule BINDetect:
     container:
-        "docker://quay.io/biocontainers/tobias:0.16.0--py38h24c8ff8_0"
+        CONTAINERS["tobias"]
     input:
         bw_Ref = "TOBIAS/ATACorrect/Ref/Ref.sort.rmdup_footprints.bw",
         bw_Alt = "TOBIAS/ATACorrect/Alt/Alt.sort.rmdup_footprints.bw",

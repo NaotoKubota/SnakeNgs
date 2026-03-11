@@ -37,7 +37,6 @@ That's it! You can find the detailed usage of each pipeline in the [documentatio
 
 - RNA-seq
 	- [preprocessing_RNAseq.smk](https://naotokubota.github.io/SnakeNgs/usage/preprocessing_RNAseq)
-	- [preprocessing_RNAseq_single.smk](https://naotokubota.github.io/SnakeNgs/usage/preprocessing_RNAseq_single)
 	- [rMATS.smk](https://naotokubota.github.io/SnakeNgs/usage/rMATS)
 	- [SUPPA2_diffSplice.smk](https://naotokubota.github.io/SnakeNgs/usage/SUPPA2_diffSplice)
 	- [Whippet.smk](https://naotokubota.github.io/SnakeNgs/usage/Whippet)
@@ -49,7 +48,6 @@ That's it! You can find the detailed usage of each pipeline in the [documentatio
 	- [cellranger_count.smk](https://naotokubota.github.io/SnakeNgs/usage/cellranger_count)
 - ChIP-seq
 	- [preprocessing_ChIPseq.smk](https://naotokubota.github.io/SnakeNgs/usage/preprocessing_ChIPseq)
-	- [preprocessing_ChIPseq_single.smk](https://naotokubota.github.io/SnakeNgs/usage/preprocessing_ChIPseq_single)
 	- [callpeak_ChIPseq.smk](https://naotokubota.github.io/SnakeNgs/usage/callpeak_ChIPseq)
 - ATAC-seq
 	- [callpeak_ATACseq.smk](https://naotokubota.github.io/SnakeNgs/usage/callpeak_ATACseq)

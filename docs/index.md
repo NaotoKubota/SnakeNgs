@@ -30,7 +30,6 @@ snakemake -s /path/to/SnakeNgs/snakefile/preprocessing_RNAseq.smk \
 - Usage
     - RNA-seq
         - [preprocessing_RNAseq.smk](usage/preprocessing_RNAseq.md)
-        - [preprocessing_RNAseq_single.smk](usage/preprocessing_RNAseq_single.md)
         - [rMATS.smk](usage/rMATS.md)
         - [SUPPA2_diffSplice.smk](usage/SUPPA2_diffSplice.md)
         - [Whippet.smk](usage/Whippet.md)
@@ -42,7 +41,6 @@ snakemake -s /path/to/SnakeNgs/snakefile/preprocessing_RNAseq.smk \
         - [cellranger_count.smk](usage/cellranger_count.md)
     - ChIP-seq
         - [preprocessing_ChIPseq.smk](usage/preprocessing_ChIPseq.md)
-        - [preprocessing_ChIPseq_single.smk](usage/preprocessing_ChIPseq_single.md)
         - [callpeak_ChIPseq.smk](usage/callpeak_ChIPseq.md)
     - ATAC-seq
         - [callpeak_ATACseq.smk](usage/callpeak_ATACseq.md)
