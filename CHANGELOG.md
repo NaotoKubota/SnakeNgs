@@ -31,8 +31,6 @@ All notable changes to this SnakeNgs project will be documented in this file.
 - `preprocessing_ChIPseq_single.smk`: Merged into `preprocessing_ChIPseq.smk`.
 - `preprocessing_HITSCLIP.smk`: Merged into `preprocessing_CLIPseq.smk`.
 - `preprocessing_iCLIPseq.smk`: Merged into `preprocessing_CLIPseq.smk`.
-- `docker/Dockerfile`: Removed.
-- `ngsFetch`: Removed (use [ngsfetch](https://github.com/NaotoKubota/ngsfetch) instead).
 
 ## [v0.3.2] - 2025-03-30
 
