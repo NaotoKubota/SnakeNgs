@@ -2,6 +2,36 @@
 
 All notable changes to this SnakeNgs project will be documented in this file.
 
+## [v0.4.0] - 2026-03-25
+
+### Added
+
+- `preprocessing_RNAseq_long.smk`: Long-read RNA-seq preprocessing pipeline.
+- `preprocessing_CLIPseq.smk`: Unified CLIP-seq preprocessing pipeline (HITS-CLIP, iCLIP-seq, etc.) with `fastp_args`, `outFilterMultimapNmax`, and `normalize_bigwig` config parameters.
+- `ONT_plasmid_assembly.smk`: ONT sequencing data analysis for plasmid assembly.
+- `snakefile/common/containers.smk`: Centralized Docker container definitions for all pipelines.
+- `snakefile/common/functions.smk`: Shared utility functions (e.g., `check_chromosome_length`).
+- GitHub Actions CI workflow for dry-run testing all Snakefiles on push/PR to `develop`.
+
+### Changed
+
+- `preprocessing_RNAseq.smk`:
+  - Merged `preprocessing_RNAseq.smk` and `preprocessing_RNAseq_single.smk` into a single file with `layout` config parameter (`"paired"` or `"single"`).
+  - Extracted common rules (`sort`, `bigwig`, `makeRefFlat`, `makeRibosomalInterval`, `CollectRnaSeqMetrics`) into `snakefile/common/`.
+  - Check chromosome lengths before indexing the bam file and make .csi index if a chromosome is over 512 Mbp.
+- `preprocessing_ChIPseq.smk`:
+  - Merged `preprocessing_ChIPseq.smk` and `preprocessing_ChIPseq_single.smk` into a single file with `layout` config parameter (`"paired"` or `"single"`).
+  - Extracted common rules (`sort`, `markdup`, `index`, `plotFingerprint`, `bigwig`) into `snakefile/common/`.
+- All Snakefiles: Centralized container definitions into `snakefile/common/containers.smk` using `CONTAINERS["key"]` references instead of hardcoded strings.
+- All Snakefiles: Moved per-rule `wildcard_constraints` to workflow-level.
+
+### Removed
+
+- `preprocessing_RNAseq_single.smk`: Merged into `preprocessing_RNAseq.smk`.
+- `preprocessing_ChIPseq_single.smk`: Merged into `preprocessing_ChIPseq.smk`.
+- `preprocessing_HITSCLIP.smk`: Merged into `preprocessing_CLIPseq.smk`.
+- `preprocessing_iCLIPseq.smk`: Merged into `preprocessing_CLIPseq.smk`.
+
 ## [v0.3.2] - 2025-03-30
 
 ### Changed

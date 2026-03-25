@@ -29,6 +29,11 @@ def deduplicate_preserve_order(lst):
     return [x for x in lst if not (x in seen or seen.add(x))]
 groups = deduplicate_preserve_order([experiment_dict[x]["group"] for x in experiment_dict])
 
+include: "common/containers.smk"
+
+wildcard_constraints:
+    merge_group = "|".join([re.escape(x) for x in groups])
+
 rule all:
     input:
         footprints_bw = expand("TOBIAS/FootprintScores/{merge_group}.sort.rmdup_footprints.bw", merge_group = groups),
@@ -37,7 +42,7 @@ rule all:
 
 rule merge_peaks:
     container:
-        "docker://quay.io/biocontainers/bedtools:2.24--1"
+        CONTAINERS["bedtools"]
     input:
         expand("{peak}", peak = peaks)
     output:
@@ -52,10 +57,8 @@ rule merge_peaks:
         '''
 
 rule merge_bam:
-    wildcard_constraints:
-        merge_group = "|".join([re.escape(x) for x in groups])
     container:
-        "docker://quay.io/biocontainers/samtools:1.18--h50ea8bc_1"
+        CONTAINERS["samtools"]
     input:
         bams = lambda wildcards: expand("{bam}", bam = [experiment_dict[x]["bam"] for x in experiment_dict if experiment_dict[x]["group"] == str(wildcards.merge_group)])
     output:
@@ -76,10 +79,8 @@ rule merge_bam:
         '''
 
 rule ATACorrect:
-    wildcard_constraints:
-        merge_group = "|".join([re.escape(x) for x in groups])
     container:
-        "docker://quay.io/biocontainers/tobias:0.16.0--py38h24c8ff8_0"
+        CONTAINERS["tobias"]
     input:
         bam = "{merge_group}.sort.rmdup.bam",
         peaks = "merged_peaks.bed"
@@ -106,10 +107,8 @@ rule ATACorrect:
         '''
 
 rule FootprintScores:
-    wildcard_constraints:
-        merge_group = "|".join([re.escape(x) for x in groups])
     container:
-        "docker://quay.io/biocontainers/tobias:0.16.0--py38h24c8ff8_0"
+        CONTAINERS["tobias"]
     input:
         corrected_bw = "TOBIAS/ATACorrect/{merge_group}/{merge_group}.sort.rmdup_corrected.bw",
         peaks = "merged_peaks.bed"
@@ -133,7 +132,7 @@ rule FootprintScores:
 
 rule BINDetect:
     container:
-        "docker://quay.io/biocontainers/tobias:0.16.0--py38h24c8ff8_0"
+        CONTAINERS["tobias"]
     input:
         footprints_bw = expand("TOBIAS/FootprintScores/{merge_group}.sort.rmdup_footprints.bw", merge_group = groups),
         peaks = "merged_peaks.bed"

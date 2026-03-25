@@ -1,7 +1,7 @@
 site_name: SnakeNgs
 site_description: Snakemake Pipeline for NGS data
 site_author: Naoto Kubota
-site_url: https://naotokubota/SnakeNgs
+site_url: https://naotokubota.github.io/SnakeNgs/
 copyright: © 2024 Naoto Kubota
 repo_url: https://github.com/NaotoKubota/SnakeNgs
 repo_name: NaotoKubota/SnakeNgs
@@ -11,29 +11,30 @@ theme:
   palette:
     # Palette toggle for automatic mode
     - media: "(prefers-color-scheme)"
-      primary: amber
-      accent: amber
+      primary: blue
+      accent: teal
       toggle:
         icon: material/brightness-auto
         name: Switch to light mode
     # Palette toggle for light mode
     - media: "(prefers-color-scheme: light)"
       scheme: default
-      primary: amber
-      accent: amber
+      primary: blue
+      accent: teal
       toggle:
         icon: material/brightness-7
         name: Switch to dark mode
     # Palette toggle for dark mode
     - media: "(prefers-color-scheme: dark)"
       scheme: slate
-      primary: amber
-      accent: amber
+      primary: blue
+      accent: teal
       toggle:
         icon: material/brightness-4
         name: Switch to light mode
   font:
     text: Roboto
+    code: Roboto Mono
   language: en
   features:
     - search.suggest
@@ -51,8 +52,6 @@ markdown_extensions:
   - toc:
       permalink: true
   - admonition
-  - codehilite
-  - extra
   - pymdownx.highlight:
       linenums: true
       linenums_style: pymdownx.inline
@@ -65,15 +64,15 @@ markdown_extensions:
 
 extra:
   social:
-    - type: "github"
-      icon: fontawesome/brands/github
+    - icon: fontawesome/brands/github
       link: "https://github.com/NaotoKubota"
-    - type: "docker"
-      icon: fontawesome/brands/docker
+    - icon: fontawesome/brands/docker
       link: "https://hub.docker.com/u/naotokubota"
-    - type: "twitter"
-      icon: fontawesome/brands/x-twitter
+    - icon: fontawesome/brands/x-twitter
       link: "https://twitter.com/naoto_kubota"
+
+extra_css:
+  - stylesheets/extra.css
 
 edit_uri: edit/main/docs/
 
@@ -81,16 +80,12 @@ nav:
 - Home: index.md
 - Installation: installation.md
 - Tutorial:
-  - Fetching public NGS data: tutorial/Fetching.md
   - QC and mapping for RNA-seq: tutorial/RNAseq_preprocessing.md
   - UMI count from single-nucleus RNA-seq: tutorial/snRNAseq_count.md
   - QC, mapping, and peak calling for ChIP-seq/ATAC-seq: tutorial/ChIP-ATAC_preprocessing_callpeak.md
 - Usage:
-  - Fetching:
-    - ngsFetch: usage/ngsFetch.md
   - RNA-seq:
     - preprocessing_RNAseq.smk: usage/preprocessing_RNAseq.md
-    - preprocessing_RNAseq_single.smk: usage/preprocessing_RNAseq_single.md
     - rMATS.smk: usage/rMATS.md
     - SUPPA2_diffSplice.smk: usage/SUPPA2_diffSplice.md
     - Whippet.smk: usage/Whippet.md
@@ -98,16 +93,17 @@ nav:
     - LeafCutter.smk: usage/LeafCutter.md
   - snRNA-seq:
     - kb-nac.smk: usage/kb-nac.md
+    - STARsolo.smk: usage/STARsolo.md
+    - cellranger_count.smk: usage/cellranger_count.md
   - ChIP-seq:
     - preprocessing_ChIPseq.smk: usage/preprocessing_ChIPseq.md
-    - preprocessing_ChIPseq_single.smk: usage/preprocessing_ChIPseq_single.md
     - callpeak_ChIPseq.smk: usage/callpeak_ChIPseq.md
   - ATAC-seq:
     - callpeak_ATACseq.smk: usage/callpeak_ATACseq.md
     - differential_ATACseq.smk: usage/differential_ATACseq.md
     - footprinting_ATACseq.smk: usage/footprinting_ATACseq.md
-  - iCLIP-seq & HITSCLIP:
-    - preprocessing_iCLIPseq.smk: usage/preprocessing_iCLIPseq.md
-    - preprocessing_HITSCLIP.smk: usage/preprocessing_HITSCLIP.md
+    - footprinting_timeseries_ATACseq.smk: usage/footprinting_timeseries_ATACseq.md
+  - CLIP-seq:
+    - preprocessing_CLIPseq.smk: usage/preprocessing_CLIPseq.md
   - File format conversion:
     - bam2cram.smk: usage/bam2cram.md

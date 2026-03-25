@@ -33,6 +33,8 @@ sample_bam_dict = get_bam_files(config['experiment_table'])
 sample_group_dict = get_groups(config['experiment_table'])
 samples = sample_bam_dict.keys()
 
+include: "common/containers.smk"
+
 rule all:
     input:
         cluster_significance = "differential_cluster_significance.txt",
@@ -73,7 +75,7 @@ rule regtools:
     wildcard_constraints:
         sample = "|".join(samples)
     container:
-        "docker://griffithlab/regtools:release-1.0.0"
+        CONTAINERS["regtools"]
     input:
         bam = lambda wildcards: sample_bam_dict[wildcards.sample],
     output:
@@ -99,7 +101,7 @@ rule regtools:
 
 rule intronClustering:
     container:
-        "docker://naotokubota/leafcutter:0.2.9"
+        CONTAINERS["leafcutter"]
     input:
         junc = expand("junc/{sample}.junc", sample = samples),
         juncfile = "juncfiles.txt"
@@ -125,7 +127,7 @@ rule intronClustering:
 
 rule gtf2exon:
     container:
-        "docker://naotokubota/leafcutter:0.2.9"
+        CONTAINERS["leafcutter"]
     output:
         exon = "exons.txt.gz"
     threads:
@@ -144,7 +146,7 @@ rule gtf2exon:
 
 rule differentialAnalysis:
     container:
-        "docker://naotokubota/leafcutter:0.2.9"
+        CONTAINERS["leafcutter"]
     input:
         clusters = "clusters_perind_numers.counts.gz",
         groupfile = "groupfile.txt",
@@ -176,7 +178,7 @@ rule differentialAnalysis:
 
 rule makeAnnotationCodes:
     container:
-        "docker://naotokubota/leafcutter:0.2.9"
+        CONTAINERS["leafcutter"]
     output:
         all_exons = "annotation_codes/annotation_codes_all_exons.txt.gz",
         all_introns = "annotation_codes/annotation_codes_all_introns.bed.gz",
@@ -201,7 +203,7 @@ rule makeAnnotationCodes:
 
 rule prepareResults:
     container:
-        "docker://naotokubota/leafcutter:0.2.9"
+        CONTAINERS["leafcutter"]
     input:
         clusters = "clusters_perind_numers.counts.gz",
         groupfile = "groupfile.txt",
@@ -235,7 +237,7 @@ rule prepareResults:
 
 rule classifyClusters:
     container:
-        "docker://naotokubota/leafcutter:0.2.9"
+        CONTAINERS["leafcutter"]
     input:
         leafviz_rdata = "leafviz.Rdata"
     output:

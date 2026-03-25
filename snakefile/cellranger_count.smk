@@ -47,6 +47,11 @@ samples = [str(x) for x in list(samples_dict.keys())]
 fastq_dict = fastq_for_cellranger(samples_dict, config["workdir"])
 fastq_converted_name_all = [fastq_dict[sample][read][i+1]["fastq_converted_name"] for sample in samples for read in ["R1", "R2"] for i in range(len(fastq_dict[sample][read]))]
 
+include: "common/containers.smk"
+
+wildcard_constraints:
+    sample = "|".join([re.escape(str(x)) for x in samples])
+
 rule all:
     input:
         expand("count/{sample}/outs/web_summary.html", sample = samples),
@@ -73,9 +78,7 @@ rule fastq_naming_conversion:
 
 rule count:
     container:
-        "docker://litd/docker-cellranger:v9.0.0"
-    wildcard_constraints:
-        sample = "|".join([re.escape(str(x)) for x in samples])
+        CONTAINERS["cellranger"]
     input:
         fastq_converted_name = lambda wildcards: [fastq_dict[wildcards.sample][read][i+1]["fastq_converted_name"] for read in ["R1", "R2"] for i in range(len(fastq_dict[wildcards.sample][read]))],
         transcriptome = config["transcriptome"]
@@ -107,7 +110,7 @@ rule count:
 
 rule multiqc:
     container:
-        "docker://multiqc/multiqc:v1.28"
+        CONTAINERS["multiqc"]
     input:
         expand("count/{sample}/outs/web_summary.html", sample=samples)
     output:

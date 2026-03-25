@@ -46,6 +46,8 @@ def read_experiment_table(experiment_table):
 samples, samples_Ref, samples_Alt, sample_fastq_dict = read_experiment_table(config['experiment_table'])
 events = ["SE", "A3", "A5", "MX", "RI"]
 
+include: "common/containers.smk"
+
 rule all:
     input:
         quant_sf = expand("Salmon/{sample}/quant.sf", sample = samples),
@@ -56,7 +58,7 @@ rule salmon:
     wildcard_constraints:
         sample = "|".join(samples)
     container:
-        "docker://combinelab/salmon:1.10.1"
+        CONTAINERS["salmon"]
     input:
         R1 = lambda wildcards: sample_fastq_dict[wildcards.sample]['R1'],
         R2 = lambda wildcards: sample_fastq_dict[wildcards.sample]['R2'],
@@ -123,7 +125,7 @@ rule merge_quant:
 
 rule generateEvents:
     container:
-        "docker://naotokubota/suppa:2.3"
+        CONTAINERS["suppa2"]
     output:
         suppa2_events_list = expand("SUPPA2/events/events_{event}_strict.ioe", event = events)
     threads:
@@ -145,7 +147,7 @@ rule psiPerEvent:
     wildcard_constraints:
         event = "|".join(events)
     container:
-        "docker://naotokubota/suppa:2.3"
+        CONTAINERS["suppa2"]
     input:
         merge_table = "SUPPA2/salmon_quant_merge.tsv",
         suppa2_events = "SUPPA2/events/events_{event}_strict.ioe"
@@ -232,7 +234,7 @@ rule diffSplice:
     wildcard_constraints:
         event = "|".join(events)
     container:
-        "docker://naotokubota/suppa:2.3"
+        CONTAINERS["suppa2"]
     input:
         suppa2_events = "SUPPA2/events/events_{event}_strict.ioe",
         psi_Ref = "SUPPA2/results/psi_{event}_Ref.tsv",

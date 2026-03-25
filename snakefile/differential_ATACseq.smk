@@ -25,13 +25,15 @@ bams = [experiment_dict[x]["bam"] for x in experiment_dict]
 peaks = [experiment_dict[x]["peak"] for x in experiment_dict]
 groups = ["Ref", "Alt"]
 
+include: "common/containers.smk"
+
 rule all:
     input:
         deseq2_results = "deseq2_results.tsv"
 
 rule merge_peaks:
     container:
-        "docker://quay.io/biocontainers/bedtools:2.24--1"
+        CONTAINERS["bedtools"]
     input:
         expand("{peak}", peak = peaks)
     output:
@@ -62,7 +64,7 @@ rule make_saf:
 
 rule read_count:
     container:
-        "docker://quay.io/biocontainers/subread:2.0.6--he4a0461_0"
+        CONTAINERS["subread"]
     input:
         bam = expand("{bam}", bam = bams),
         saf = "merged_peaks.saf"
@@ -107,7 +109,7 @@ rule make_count_table:
 
 rule deseq2:
     container:
-        "docker://quay.io/biocontainers/bioconductor-deseq2:1.42.0--r43hf17093f_0"
+        CONTAINERS["deseq2"]
     input:
         experiment_table = config["experiment_table"],
         counts = "all_counts_for_DESeq2.tsv"

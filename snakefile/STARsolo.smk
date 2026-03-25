@@ -46,16 +46,19 @@ def read_experiment_table(file):
 samples_dict = read_experiment_table(config["experiment_table"])
 samples = [str(x) for x in list(samples_dict.keys())]
 
+include: "common/containers.smk"
+
+wildcard_constraints:
+	sample = "|".join([re.escape(str(x)) for x in samples])
+
 rule all:
 	input:
 		bam = expand("star/{sample}/Aligned.sortedByCoord.out.bam", sample = samples),
 		bai = expand("star/{sample}/Aligned.sortedByCoord.out.bam.bai", sample = samples)
 
 rule STARsolo:
-	wildcard_constraints:
-		sample = "|".join([re.escape(str(x)) for x in samples])
 	container:
-		"docker://quay.io/biocontainers/star:2.7.11a--h0033a41_0"
+		CONTAINERS["star"]
 	input:
 		R1_split = lambda wildcards: samples_dict[wildcards.sample]["R1_split"],
 		R2_split = lambda wildcards: samples_dict[wildcards.sample]["R2_split"]
@@ -99,10 +102,8 @@ rule STARsolo:
 		"""
 
 rule index:
-	wildcard_constraints:
-		sample = "|".join([re.escape(str(x)) for x in samples])
 	container:
-		"docker://quay.io/biocontainers/samtools:1.18--h50ea8bc_1"
+		CONTAINERS["samtools"]
 	input:
 		bam = "star/{sample}/Aligned.sortedByCoord.out.bam"
 	output:

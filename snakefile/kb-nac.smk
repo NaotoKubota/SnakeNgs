@@ -31,6 +31,11 @@ def read_experiment_table(file):
 samples_dict = read_experiment_table(config["experiment_table"])
 samples = [str(x) for x in list(samples_dict.keys())]
 
+include: "common/containers.smk"
+
+wildcard_constraints:
+	sample = "|".join([re.escape(str(x)) for x in samples])
+
 rule all:
 	input:
 		adata_unfiliterd_h5ad = expand("kb/{sample}/counts_unfiltered/adata.h5ad", sample = samples),
@@ -40,7 +45,7 @@ rule all:
 
 rule kb_ref:
 	container:
-		"docker://quay.io/biocontainers/kb-python:0.28.2--pyhdfd78af_2"
+		CONTAINERS["kb_python"]
 	input:
 		dna_fasta = config["dna_fasta"],
 		gtf = config["gtf"]
@@ -71,10 +76,8 @@ rule kb_ref:
 		"""
 
 rule kb_count:
-	wildcard_constraints:
-		sample = "|".join([re.escape(str(x)) for x in samples])
 	container:
-		"docker://quay.io/biocontainers/kb-python:0.28.2--pyhdfd78af_2"
+		CONTAINERS["kb_python"]
 	input:
 		kb_index = "kb_index/index.idx",
 		kb_t2g = "kb_index/t2g.txt",
@@ -115,10 +118,8 @@ rule kb_count:
 		"""
 
 rule bustools_inspect_filtered:
-	wildcard_constraints:
-		sample = "|".join([re.escape(str(x)) for x in samples])
 	container:
-		"docker://quay.io/biocontainers/bustools:0.43.2--he1fd2f9_2"
+		CONTAINERS["bustools"]
 	input:
 		filtered_bus = "kb/{sample}/output.filtered.bus"
 	output:
@@ -144,7 +145,7 @@ rule bustools_inspect_filtered:
 
 rule multiqc:
 	container:
-		"docker://multiqc/multiqc:v1.28"
+		CONTAINERS["multiqc"]
 	input:
 		inspect_filtered = expand("kb/inspect_filtered/{sample}/inspect.json", sample = samples)
 	output:
