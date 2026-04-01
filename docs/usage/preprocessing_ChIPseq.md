@@ -100,7 +100,7 @@ output/
 
 - `bowtie2_args` is the optional argument for Bowtie2 (e.g., `--very-sensitive`).
 
-Please refer to the [tutorial](../tutorial/ChIP-ATAC_preprocessing.md) for more information.
+Please refer to the [tutorial](../tutorial/ChIP-ATAC_preprocessing_callpeak.md) for more information.
 
 ## Docker image used in the workflow
 
