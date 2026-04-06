@@ -27,4 +27,7 @@ CONTAINERS = {
     "suppa2": "docker://naotokubota/suppa:2.3",
     "salmon": "docker://combinelab/salmon:1.10.1",
     "rmats": "docker://xinglab/rmats:v4.3.0",
+    "trinity": "docker://trinityrnaseq/trinityrnaseq:2.15.2",
+    "transdecoder": "docker://quay.io/biocontainers/transdecoder:5.7.1--pl5321hdfd78af_0",
+    "blast": "docker://quay.io/biocontainers/blast:2.16.0--hc155240_2",
 }
