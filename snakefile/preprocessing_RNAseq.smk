@@ -13,18 +13,34 @@ config.yaml must contain:
 
 workdir: config["workdir"]
 star_index = config["star_index"]
-samples = config["samples"]
 gtf = config["gtf"]
 layout = config["layout"]
+
+include: "common/containers.smk"
+include: "common/functions.smk"
+
+samples, samples_dict = normalize_samples(config["samples"])
+
+include: "common/sort_bam.smk"
+include: "common/bigwig.smk"
+include: "common/rnaseq_metrics.smk"
 
 wildcard_constraints:
     sample = "|".join([re.escape(x) for x in samples])
 
-include: "common/containers.smk"
-include: "common/functions.smk"
-include: "common/sort_bam.smk"
-include: "common/bigwig.smk"
-include: "common/rnaseq_metrics.smk"
+# When samples is given as a dict {sample: [run1, run2, ...]}, fastq files for
+# each run are concatenated into fastq_merged/ before QC. When samples is a
+# plain list, the merge rule is not emitted and rule qc reads fastq/ directly.
+def _qc_input_paired(wildcards):
+    base = "fastq_merged" if samples_dict else "fastq"
+    return {
+        "R1": f"{base}/{wildcards.sample}_1.fastq.gz",
+        "R2": f"{base}/{wildcards.sample}_2.fastq.gz",
+    }
+
+def _qc_input_single(wildcards):
+    base = "fastq_merged" if samples_dict else "fastq"
+    return {"R1": f"{base}/{wildcards.sample}.fastq.gz"}
 
 if layout == "paired":
 
@@ -36,12 +52,28 @@ if layout == "paired":
             RnaSeqMetrics = expand("metrics/{sample}.picard.analysis.CollectRnaSeqMetrics", sample = samples),
             InsertSizeMetrics = expand("metrics/{sample}.picard.analysis.CollectInsertSizeMetrics", sample = samples)
 
+    if samples_dict:
+
+        rule merge_fastq_paired:
+            input:
+                R1 = lambda wc: [f"fastq/{run}_1.fastq.gz" for run in samples_dict[wc.sample]],
+                R2 = lambda wc: [f"fastq/{run}_2.fastq.gz" for run in samples_dict[wc.sample]]
+            output:
+                R1 = "fastq_merged/{sample}_1.fastq.gz",
+                R2 = "fastq_merged/{sample}_2.fastq.gz"
+            benchmark:
+                "benchmark/merge_fastq_{sample}.txt"
+            log:
+                "log/merge_fastq_{sample}.log"
+            shell:
+                "cat {input.R1} > {output.R1} 2> {log} && "
+                "cat {input.R2} > {output.R2} 2>> {log}"
+
     rule qc:
         container:
             CONTAINERS["fastp"]
         input:
-            R1 = "fastq/{sample}_1.fastq.gz",
-            R2 = "fastq/{sample}_2.fastq.gz"
+            unpack(_qc_input_paired)
         output:
             R1 = "fastp/{sample}_1.fastq.gz",
             R2 = "fastp/{sample}_2.fastq.gz",
@@ -131,11 +163,25 @@ else:
             bigwig = expand("bigwig/{sample}.bw", sample = samples),
             RnaSeqMetrics = expand("metrics/{sample}.picard.analysis.CollectRnaSeqMetrics", sample = samples)
 
+    if samples_dict:
+
+        rule merge_fastq_single:
+            input:
+                R1 = lambda wc: [f"fastq/{run}.fastq.gz" for run in samples_dict[wc.sample]]
+            output:
+                R1 = "fastq_merged/{sample}.fastq.gz"
+            benchmark:
+                "benchmark/merge_fastq_{sample}.txt"
+            log:
+                "log/merge_fastq_{sample}.log"
+            shell:
+                "cat {input.R1} > {output.R1} 2> {log}"
+
     rule qc:
         container:
             CONTAINERS["fastp"]
         input:
-            R1 = "fastq/{sample}.fastq.gz"
+            unpack(_qc_input_single)
         output:
             R1 = "fastp/{sample}.fastq.gz",
             json = "fastp/log/{sample}.json"

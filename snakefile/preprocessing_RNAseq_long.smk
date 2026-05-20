@@ -7,12 +7,22 @@ Usage:
 '''
 
 workdir: config["workdir"]
-samples = config["samples"]
+
+include: "common/containers.smk"
+include: "common/functions.smk"
+
+samples, samples_dict = normalize_samples(config["samples"])
 
 wildcard_constraints:
     sample = "|".join([re.escape(x) for x in samples])
 
-include: "common/containers.smk"
+# When samples is given as a dict {sample: [run1, run2, ...]}, fastq files for
+# each run are concatenated into fastq_merged/ before downstream rules. When
+# samples is a plain list, the merge rule is not emitted and rules read
+# fastq/ directly.
+def _fastq_input_single(wildcards):
+    base = "fastq_merged" if samples_dict else "fastq"
+    return f"{base}/{wildcards.sample}.fastq.gz"
 
 rule all:
     input:
@@ -20,6 +30,20 @@ rule all:
         bigwig = expand("bigwig/{sample}.bw", sample = samples),
         isoquant_gene_counts = "isoquant/OUT/OUT.transcript_model_grouped_tpm.tsv",
         multiqc = "multiqc/multiqc_report.html"
+
+if samples_dict:
+
+    rule merge_fastq_single:
+        input:
+            R1 = lambda wc: [f"fastq/{run}.fastq.gz" for run in samples_dict[wc.sample]]
+        output:
+            R1 = "fastq_merged/{sample}.fastq.gz"
+        benchmark:
+            "benchmark/merge_fastq_{sample}.txt"
+        log:
+            "log/merge_fastq_{sample}.log"
+        shell:
+            "cat {input.R1} > {output.R1} 2> {log}"
 
 rule gtf2bed:
     container:
@@ -43,7 +67,7 @@ rule qc:
     container:
         CONTAINERS["sequali"]
     input:
-        R1 = "fastq/{sample}.fastq.gz"
+        R1 = _fastq_input_single
     output:
         json = "sequali/{sample}.fastq.gz.json",
         html = "sequali/{sample}.fastq.gz.html"
@@ -65,7 +89,7 @@ rule mapping:
     container:
         CONTAINERS["minimap2"]
     input:
-        R1 = "fastq/{sample}.fastq.gz",
+        R1 = _fastq_input_single,
         annobed = "annotation/anno.bed"
     output:
         sam = "minimap2/{sample}/{sample}_Aligned.out.sam"
