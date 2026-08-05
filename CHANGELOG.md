@@ -2,6 +2,21 @@
 
 All notable changes to this SnakeNgs project will be documented in this file.
 
+## [v0.5.0] - 2026-XX-XX
+
+### Added
+
+- `denovo_assembly_RNAseq.smk`: De novo transcriptome assembly pipeline for RNA-seq data.
+
+### Changed
+
+- `preprocessing_RNAseq.smk`, `preprocessing_ChIPseq.smk`, `preprocessing_CLIPseq.smk`, `preprocessing_RNAseq_long.smk`:
+  - Added backward-compatible support for grouped samples in `config["samples"]` using dict form (e.g., `{ "sample1": ["runA", "runB"] }`) in addition to legacy list form.
+  - Added conditional `merge_fastq` rules to concatenate run-level FASTQ files into per-sample files under `fastq_merged/` before QC/mapping when dict-form samples are provided.
+  - Kept legacy behavior unchanged for list-form samples (no merge rule scheduled; existing `fastq/` inputs are used directly).
+- `snakefile/common/functions.smk`:
+  - Added `normalize_samples()` utility to normalize `samples` config values across workflows.
+
 ## [v0.4.0] - 2026-03-25
 
 ### Added
