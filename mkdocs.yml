@@ -86,6 +86,7 @@ nav:
 - Usage:
   - RNA-seq:
     - preprocessing_RNAseq.smk: usage/preprocessing_RNAseq.md
+    - denovo_assembly_RNAseq.smk: usage/denovo_assembly_RNAseq.md
     - rMATS.smk: usage/rMATS.md
     - SUPPA2_diffSplice.smk: usage/SUPPA2_diffSplice.md
     - Whippet.smk: usage/Whippet.md
