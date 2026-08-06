@@ -38,6 +38,7 @@ That's it! You can find the detailed usage of each pipeline in the [documentatio
 
 - RNA-seq
 	- [preprocessing_RNAseq.smk](https://naotokubota.github.io/SnakeNgs/usage/preprocessing_RNAseq)
+	- [bam2bw_RNAseq.smk](https://naotokubota.github.io/SnakeNgs/usage/bam2bw_RNAseq)
 	- [rMATS.smk](https://naotokubota.github.io/SnakeNgs/usage/rMATS)
 	- [SUPPA2_diffSplice.smk](https://naotokubota.github.io/SnakeNgs/usage/SUPPA2_diffSplice)
 	- [Whippet.smk](https://naotokubota.github.io/SnakeNgs/usage/Whippet)

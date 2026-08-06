@@ -61,6 +61,9 @@ jobs:
       - name: "Test: bam2cram"
         run: snakemake --snakefile snakefile/bam2cram.smk --configfile tests/testdata/configs/config_bam2cram.yaml --directory tests/testdata/workdirs/bam2cram --dry-run --cores 1
 
+      - name: "Test: bam2bw_RNAseq"
+        run: snakemake --snakefile snakefile/bam2bw_RNAseq.smk --configfile tests/testdata/configs/config_bam2bw_RNAseq.yaml --dry-run --cores 1
+
       - name: "Test: STARsolo"
         run: snakemake --snakefile snakefile/STARsolo.smk --configfile tests/testdata/configs/config_STARsolo.yaml --dry-run --cores 1
 

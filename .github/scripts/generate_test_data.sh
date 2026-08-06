@@ -149,6 +149,9 @@ mkdir -p "$BASE/workdirs/footprinting_ts_atacseq"
 mkdir -p "$BASE/workdirs/bam2cram"
 touch "$BASE/workdirs/bam2cram/sample1.bam" "$BASE/workdirs/bam2cram/sample2.bam"
 
+# bam2bw_RNAseq
+mkdir -p "$BASE/workdirs/bam2bw_rnaseq"
+
 # STARsolo
 mkdir -p "$BASE/workdirs/starsolo"
 
@@ -306,7 +309,13 @@ reference: ${BASE}/dummy.fa
 bam_list: ${BASE}/bam_list.txt
 YAML
 
-# 14. STARsolo
+# 14. bam2bw_RNAseq
+cat > "$BASE/configs/config_bam2bw_RNAseq.yaml" << YAML
+workdir: ${BASE}/workdirs/bam2bw_rnaseq
+experiment_table: ${BASE}/experiment_tables/bam_group.tsv
+YAML
+
+# 15. STARsolo
 cat > "$BASE/configs/config_STARsolo.yaml" << YAML
 workdir: ${BASE}/workdirs/starsolo
 experiment_table: ${BASE}/experiment_tables/R1_R2.tsv
@@ -322,7 +331,7 @@ soloUMIdedup: 1MM_CR
 soloBarcodeReadLength: 150
 YAML
 
-# 15. cellranger_count
+# 16. cellranger_count
 cat > "$BASE/configs/config_cellranger_count.yaml" << YAML
 workdir: ${BASE}/workdirs/cellranger
 experiment_table: ${BASE}/experiment_tables/R1_R2.tsv
@@ -330,7 +339,7 @@ transcriptome: ${BASE}/transcriptome
 create_bam: "false"
 YAML
 
-# 16. kb-nac
+# 17. kb-nac
 cat > "$BASE/configs/config_kb_nac.yaml" << YAML
 workdir: ${BASE}/workdirs/kb_nac
 experiment_table: ${BASE}/experiment_tables/R1_R2.tsv
@@ -339,7 +348,7 @@ gtf: ${BASE}/dummy.gtf
 technology: 10xv3
 YAML
 
-# 17. ONT_plasmid_assembly
+# 18. ONT_plasmid_assembly
 cat > "$BASE/configs/config_ONT_plasmid_assembly.yaml" << YAML
 workdir: ${BASE}/workdirs/ont_assembly
 samples:
@@ -347,14 +356,14 @@ samples:
 reference: ${BASE}/dummy.fa
 YAML
 
-# 18. Whippet
+# 19. Whippet
 cat > "$BASE/configs/config_Whippet.yaml" << YAML
 workdir: ${BASE}/workdirs/whippet
 experiment_table: ${BASE}/experiment_tables/fastq_group.tsv
 whippet_index: ${BASE}/whippet_index.jls
 YAML
 
-# 19. SUPPA2_diffSplice
+# 20. SUPPA2_diffSplice
 cat > "$BASE/configs/config_SUPPA2_diffSplice.yaml" << YAML
 workdir: ${BASE}/workdirs/suppa2
 experiment_table: ${BASE}/experiment_tables/fastq_group.tsv
@@ -362,7 +371,7 @@ salmon_index: ${BASE}/salmon_index
 gtf: ${BASE}/dummy.gtf
 YAML
 
-# 20. LeafCutter
+# 21. LeafCutter
 cat > "$BASE/configs/config_LeafCutter.yaml" << YAML
 workdir: ${BASE}/workdirs/leafcutter
 experiment_table: ${BASE}/experiment_tables/bam_group.tsv
@@ -378,7 +387,7 @@ min_samples_per_group: 3
 FDR: 0.05
 YAML
 
-# 21. rMATS
+# 22. rMATS
 cat > "$BASE/configs/config_rMATS.yaml" << YAML
 workdir: ${BASE}/workdirs/rmats
 experiment_table: ${BASE}/experiment_tables/bam_group.tsv
@@ -391,7 +400,7 @@ mil: 0
 mel: 10000
 YAML
 
-# 22. MAJIQ
+# 23. MAJIQ
 cat > "$BASE/configs/config_MAJIQ.yaml" << YAML
 container: dummy_container.sif
 workdir: ${BASE}/workdirs/majiq
