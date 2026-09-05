@@ -1,0 +1,57 @@
+/* Modern color overrides for amber theme */
+
+/* CSS Custom Properties for consistent theming */
+:root {
+  /* Modern blue-teal gradient replacing amber */
+  --md-primary-fg-color: #2196F3;
+  --md-primary-fg-color--light: #42A5F5;
+  --md-primary-fg-color--dark: #1976D2;
+  --md-accent-fg-color: #00BCD4;
+  --md-accent-fg-color--transparent: rgba(0, 188, 212, 0.1);
+  
+  /* Subtle gradient backgrounds */
+  --gradient-primary: linear-gradient(135deg, #2196F3 0%, #00BCD4 100%);
+  --gradient-header: linear-gradient(135deg, #1976D2 0%, #0097A7 100%);
+}
+
+/* Dark mode adjustments */
+[data-md-color-scheme="slate"] {
+  --md-primary-fg-color: #42A5F5;
+  --md-primary-fg-color--light: #64B5F6;
+  --md-primary-fg-color--dark: #1976D2;
+  --md-accent-fg-color: #26C6DA;
+  --gradient-header: linear-gradient(135deg, #1976D2 0%, #00838F 100%);
+}
+
+/* Header with subtle gradient */
+.md-header {
+  background: var(--gradient-header) !important;
+}
+
+/* Navigation active states */
+.md-nav__item .md-nav__link--active {
+  color: var(--md-primary-fg-color);
+}
+
+/* Buttons with modern styling */
+.md-button--primary {
+  background: var(--gradient-primary);
+  border: none;
+}
+
+/* Code highlighting improvements */
+.md-typeset code {
+  background: var(--md-accent-fg-color--transparent);
+  color: var(--md-primary-fg-color--dark);
+}
+
+/* Search styling */
+.md-search__form {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+}
+
+/* Footer gradient */
+.md-footer {
+  background: var(--gradient-header);
+}
