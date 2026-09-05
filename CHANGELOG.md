@@ -7,6 +7,7 @@ All notable changes to this SnakeNgs project will be documented in this file.
 ### Added
 
 - `denovo_assembly_RNAseq.smk`: De novo transcriptome assembly pipeline for RNA-seq data.
+- `bam2bw_RNAseq.smk`: Workflow for converting RNA-seq BAM files to per-sample BigWig files using deepTools `bamCoverage` with a bin size of 1.
 
 ### Changed
 
