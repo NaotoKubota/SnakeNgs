@@ -1,0 +1,32 @@
+Bootstrap: docker
+From: python:3.12-slim-bookworm
+
+%labels
+    Description sc/snRNA-seq analysis: Scanpy, Scrublet, CellTypist, scVI and scANVI
+
+%files
+    containers/scrna-requirements.txt /opt/scrna-requirements.txt
+
+%post
+    apt-get update
+    apt-get install -y --no-install-recommends build-essential libgomp1 fonts-liberation ca-certificates
+    rm -rf /var/lib/apt/lists/*
+    # CUDA-capable wheel; CPU execution is also supported. GPU jobs need --nv.
+    pip install --no-cache-dir -r /opt/scrna-requirements.txt
+    pip check
+    pip freeze > /opt/scrna-python-freeze.txt
+
+%environment
+    export MPLBACKEND=Agg
+    export PYTHONNOUSERSITE=1
+    export PYTHONUNBUFFERED=1
+    export NUMBA_CACHE_DIR=/tmp/numba-cache
+    export MPLCONFIGDIR=/tmp/matplotlib
+    export CELLTYPIST_FOLDER=/tmp/celltypist
+
+%test
+    CELLTYPIST_FOLDER=/tmp/celltypist MPLCONFIGDIR=/tmp/matplotlib NUMBA_CACHE_DIR=/tmp/numba-cache \
+        python -c "import scanpy, scrublet, celltypist, scvi, torch, igraph, leidenalg; print(scvi.__version__)"
+
+%runscript
+    exec python "$@"

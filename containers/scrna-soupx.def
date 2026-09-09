@@ -1,0 +1,21 @@
+Bootstrap: docker
+From: mambaorg/micromamba:2.3.2
+
+%labels
+    Description SoupX 1.6.2 with sparse Matrix Market interchange
+
+%post
+    micromamba create -y -p /opt/soupx -c conda-forge --override-channels --strict-channel-priority \
+        r-base=4.4 r-soupx=1.6.2 r-jsonlite=1.9.1
+    micromamba list -p /opt/soupx --explicit > /opt/soupx-conda-explicit.txt
+    micromamba clean --all --yes
+
+%environment
+    export PATH=/opt/soupx/bin:$PATH
+    export R_LIBS_USER=/opt/soupx/lib/R/library
+
+%test
+    /opt/soupx/bin/Rscript -e 'library(SoupX); library(Matrix); library(jsonlite); stopifnot(packageVersion("SoupX") == "1.6.2")'
+
+%runscript
+    exec /opt/soupx/bin/Rscript "$@"

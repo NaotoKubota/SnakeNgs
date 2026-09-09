@@ -5,3 +5,8 @@ config/
 *.bash
 slurm-*.out
 tests/testdata/
+__pycache__/
+.pytest_cache/
+*.sif
+results/
+runs/

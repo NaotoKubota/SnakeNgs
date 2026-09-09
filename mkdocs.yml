@@ -94,6 +94,7 @@ nav:
     - MAJIQ.smk: usage/MAJIQ.md
     - LeafCutter.smk: usage/LeafCutter.md
   - snRNA-seq:
+    - scrna_seq.smk: usage/scrna_seq.md
     - kb-nac.smk: usage/kb-nac.md
     - STARsolo.smk: usage/STARsolo.md
     - cellranger_count.smk: usage/cellranger_count.md

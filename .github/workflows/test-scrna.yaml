@@ -1,0 +1,17 @@
+name: Test scRNA-seq analysis
+on:
+  push:
+    branches: [develop]
+    paths: ['snakefile/scrna_seq.smk', 'snakefile/scripts/scrna/**', 'examples/scrna_seq/**', 'tests/scrna/**', '.github/workflows/test-scrna.yaml']
+  pull_request:
+    paths: ['snakefile/scrna_seq.smk', 'snakefile/scripts/scrna/**', 'examples/scrna_seq/**', 'tests/scrna/**', '.github/workflows/test-scrna.yaml']
+jobs:
+  numerical-and-dag:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install snakemake==8.30.0 pytest numpy==1.26.4 pandas==2.2.3 scipy==1.15.3 anndata==0.11.4 scikit-learn==1.6.1
+      - run: python -m pytest -q tests/scrna

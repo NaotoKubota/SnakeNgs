@@ -1,0 +1,135 @@
+# Paths are resolved relative to the directory where snakemake is launched.
+workdir: results/scrna_seq
+sample_table: examples/scrna_seq/samples.tsv
+input_mode: fastq                 # fastq or counts (reuse kb H5ADs; see docs)
+seed: 42
+
+containers:
+  kb: docker://quay.io/biocontainers/kb-python:0.28.2--pyhdfd78af_2
+  cellranger: docker://litd/docker-cellranger:v9.0.0
+  analysis: containers/scrna-analysis.sif
+  soupx: containers/scrna-soupx.sif
+
+reference:
+  build: true
+  fasta: /path/to/genome.fa
+  gtf: /path/to/genes.gtf
+  # If build=false, supply index, t2g and (for nac) cdna_t2c, intron_t2c.
+  index: null
+  t2g: null
+  cdna_t2c: null
+  intron_t2c: null
+
+kb:
+  workflow: nac                   # nac for nuclei; standard for scRNA-seq
+  technology: 10XV3
+  whitelist: null
+  count_layer: auto               # nac: mature + nascent + ambiguous; standard: X
+  gene_symbol_column: gene_name   # fallback to t2g; do not make up symbols
+
+cellranger:
+  enabled: true
+  transcriptome: /path/to/refdata-gex-mm10-2020-A
+  include_introns: true
+  create_bam: false
+  chemistry: auto
+  expect_cells: null
+
+qc:
+  min_genes: 200
+  min_counts: 300
+  max_genes: null
+  max_counts: null
+  max_pct_mt: 5.0                 # adjust for tissue and sc vs sn
+  max_pct_hb: 1.0
+  mt_regex: '(?i)^mt-'
+  hb_regex: '(?i)^hb[ab](?!p)'
+  mad_n: 5.0                     # sample-local log1p(UMI), log1p(genes)
+  mad_upper: false               # doublets are handled by Scrublet
+  min_cells_per_sample: 50
+
+scrublet:
+  enabled: true
+  expected_doublet_rate: 0.06
+  threshold: null                 # null = Scrublet simulated-score threshold
+  n_prin_comps: 30
+  sim_doublet_ratio: 2.0
+  min_counts: 3
+  min_cells: 3
+  min_gene_variability_pctl: 85
+
+soupx:
+  enabled: true
+  soup_range: [10, 100]           # kb droplets, excluding every called barcode
+  min_empty_droplets: 100
+  contamination_fraction: null    # null = autoEstCont; no silent fallback
+  clusters_resolution: 0.5
+
+depth:
+  enabled: true                  # binomial thinning by sample median UMI
+  target_median: null             # null = smallest sample median, never upsample
+  groupby: []                     # e.g. [age] to match within age
+  model_layer: counts             # counts or counts_depthmatched
+  # Both layers retained. Full-depth scVI is default; matching is a sensitivity option.
+
+integration:
+  batch_key: batch
+  categorical_covariate_keys: []
+  continuous_covariate_keys: []
+  n_hvg: 3000
+  n_latent: 30
+  n_layers: 2
+  max_epochs: 300
+  batch_size: 128
+  accelerator: cpu               # gpu: add --singularity-args '--nv ...'
+  devices: 1
+  n_neighbors: 15
+  leiden_resolution: 1.0
+
+celltypist:
+  model: Mouse_Isocortex_Hippocampus.pkl
+  model_path: null                # local model instead of named download
+  model_sha256: null              # optional expected hash; actual hash is recorded
+  majority_voting: true
+  over_clustering_resolution: 5.0 # fine clusters on the scVI neighbor graph
+  min_prop: 0.5
+  min_model_genes: 100
+  seed_probability: 0.8
+  seed_margin: 0.2
+
+scanvi:
+  enabled: true
+  unlabeled_category: Unknown
+  min_seed_cells: 20              # rare/unreliable classes remain unlabeled
+  max_epochs: 100
+  n_samples_per_label: 100
+  posterior_samples: 30          # stochastic latent draws, fixed trained weights
+  min_probability: 0.7
+  max_normalized_entropy: 0.5
+  composition_draws: 500         # label-imputation intervals, not biological CIs
+
+report:
+  title: sc/snRNA-seq primary analysis
+  font_family: Arial
+  font_size: 8
+  dpi: 400
+  width_mm: 180
+  point_size: 1.0
+  palette: ['#0072B2', '#E69F00', '#009E73', '#CC79A7', '#56B4E9', '#D55E00', '#F0E442', '#000000']
+  celltype_colors: {}
+  markers:                       # adapt to model, species, and tissue
+    Exc: [Slc17a7, Camk2a]
+    Inh: [Gad1, Gad2]
+    Astro: [Aqp4, Aldoc]
+    Micro: [P2ry12, Cx3cr1]
+    OL: [Mbp, Plp1]
+    OPC: [Pdgfra, Cspg4]
+  max_plot_cells: 100000
+
+resources:
+  mapping_threads: 8
+  mapping_mem_mb: 64000
+  analysis_threads: 8
+  analysis_mem_mb: 64000
+  model_mem_mb: 64000             # scVI, CellTypist, scANVI; separate from CPU QC/report
+  gpu: 0                         # scheduler resource; set to 1 with accelerator: gpu

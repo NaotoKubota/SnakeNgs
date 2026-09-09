@@ -45,6 +45,7 @@ That's it! You can find the detailed usage of each pipeline in the [documentatio
 	- [MAJIQ.smk](https://naotokubota.github.io/SnakeNgs/usage/MAJIQ)
 	- [LeafCutter.smk](https://naotokubota.github.io/SnakeNgs/usage/LeafCutter)
 - snRNA-seq
+	- [scrna_seq.smk](docs/usage/scrna_seq.md): sc/snRNA-seq QC, SoupX, depth normalization, scVI, CellTypist, scANVI, and a self-contained HTML report
 	- [kb-nac.smk](https://naotokubota.github.io/SnakeNgs/usage/kb-nac)
 	- [STARsolo.smk](https://naotokubota.github.io/SnakeNgs/usage/STARsolo)
 	- [cellranger_count.smk](https://naotokubota.github.io/SnakeNgs/usage/cellranger_count)

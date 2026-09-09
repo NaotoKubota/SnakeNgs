@@ -6,6 +6,7 @@ All notable changes to this SnakeNgs project will be documented in this file.
 
 ### Added
 
+- `scrna_seq.smk`: Configurable sc/snRNA-seq primary analysis with kb mapping, Cell Ranger QC metrics, sample-level QC/Scrublet, SoupX, depth matching, scVI, CellTypist, scANVI label uncertainty, and a self-contained HTML report. Includes Singularity definitions, example configuration, documentation, and numerical/DAG tests.
 - `denovo_assembly_RNAseq.smk`: De novo transcriptome assembly pipeline for RNA-seq data.
 - `bam2bw_RNAseq.smk`: Workflow for converting RNA-seq BAM files to per-sample BigWig files using deepTools `bamCoverage` with a bin size of 1.
 

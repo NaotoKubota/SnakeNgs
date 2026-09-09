@@ -1,0 +1,3 @@
+sample	R1	R2	batch	donor	condition
+control_1	/path/to/control_L001_R1.fastq.gz,/path/to/control_L002_R1.fastq.gz	/path/to/control_L001_R2.fastq.gz,/path/to/control_L002_R2.fastq.gz	batch1	mouse1	control
+treated_1	/path/to/treated_L001_R1.fastq.gz	/path/to/treated_L001_R2.fastq.gz	batch1	mouse2	treated
