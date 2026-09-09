@@ -18,7 +18,8 @@ def prepare_config(config, defaults, base):
         for key, value in src.items():
             if key not in dst:
                 raise ValueError(f"Unknown setting: {prefix}{key}")
-            if isinstance(dst[key], dict) and key not in ("markers", "celltype_colors"):
+            if isinstance(dst[key], dict) and key not in ("markers", "celltype_colors",
+                                                           "major_celltype_colors", "major_celltype_map"):
                 if not isinstance(value, dict):
                     raise ValueError(f"{prefix}{key} must be a mapping")
                 merge(dst[key], value, prefix + key + ".")
@@ -85,6 +86,24 @@ def prepare_config(config, defaults, base):
         raise ValueError('seed must be an integer in [0, 2**32)')
     if not cfg['report']['palette'] or any(not re.fullmatch(r'#[0-9a-fA-F]{6}', c) for c in cfg['report']['palette']):
         raise ValueError('report.palette must contain #RRGGBB colors')
+    for key in ['celltype_colors', 'major_celltype_colors']:
+        colors = cfg['report'][key]
+        if (not isinstance(colors, dict)
+                or any(not isinstance(label, str) or not label.strip()
+                       or not isinstance(color, str) or not re.fullmatch(r'#[0-9a-fA-F]{6}', color)
+                       for label, color in colors.items())):
+            raise ValueError(f'report.{key} must map labels to #RRGGBB colors')
+        normalized = [color.lower() for color in colors.values()]
+        if len(normalized) != len(set(normalized)):
+            raise ValueError(f'report.{key} contains duplicate colors')
+    major_map = cfg['annotation']['major_celltype_map']
+    if (not isinstance(major_map, dict)
+            or any(not isinstance(subtype, str) or not subtype.strip()
+                   or not isinstance(major, str) or not major.strip()
+                   for subtype, major in major_map.items())):
+        raise ValueError('annotation.major_celltype_map must map subtype names to major cell types')
+    if not isinstance(cfg['annotation']['unmapped_major_celltype'], str) or not cfg['annotation']['unmapped_major_celltype'].strip():
+        raise ValueError('annotation.unmapped_major_celltype must be a nonempty string')
     for key in ['max_pct_mt', 'max_pct_hb']:
         if not isinstance(cfg['qc'][key], (int, float)) or not 0 <= cfg['qc'][key] <= 100:
             raise ValueError(f'qc.{key} must be in [0,100]')

@@ -28,12 +28,16 @@ def verify(workdir, reload_models=False):
         np.testing.assert_allclose(p.sum(axis=1), 1, atol=1e-5)
         assert np.all((a.obs['scanvi_normalized_entropy'] >= 0) & (a.obs['scanvi_normalized_entropy'] <= 1.00001))
         composition = pd.read_csv(root / 'analysis/composition.tsv', sep='\t')
+        composition_major = pd.read_csv(root / 'analysis/composition_major.tsv', sep='\t')
         np.testing.assert_allclose(composition.groupby('sample')['expected_fraction'].sum(), 1, atol=1e-5)
+        np.testing.assert_allclose(composition_major.groupby('sample')['expected_fraction'].sum(), 1, atol=1e-5)
+        assert 'major_cell_type' in a.obs
     content = (root / 'report/report.html').read_text()
     assert content.startswith('<!doctype html>')
     assert '<html lang="en">' in content
     assert not re.search(r'[\u3040-\u30ff\u3400-\u9fff]', content)
     assert len(re.findall(r'<img ', content)) >= 9
+    assert 'Subtype composition' in content and 'Major cell-type composition' in content
     assert not re.search(r'<(?:script|img|link)[^>]+(?:src|href)=["\']https?://', content)
     assert 'Synthetic smoke test &lt;not biological data&gt;' in content
     for ext in ['pdf', 'svg', 'png']:

@@ -3,7 +3,7 @@ from pathlib import Path
 import pytest
 import yaml
 from workflow_config import prepare_config
-from report_utils import design_notes, table
+from report_utils import design_notes, distinct_colors, table
 import pandas as pd
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -58,3 +58,13 @@ def test_design_and_escaping():
     assert any('confounded' in n for n in notes)
     assert len([n for n in notes if 'donor n=1' in n]) == 2
     assert '<script>' not in table(pd.DataFrame({'x': ['<script>']}))
+
+
+def test_distinct_celltype_colors_and_duplicate_override_rejected(config):
+    colors = distinct_colors([f'Type{i}' for i in range(30)], ['#0072B2', '#E69F00'])
+    assert len(colors) == 30
+    assert len({color.lower() for color in colors.values()}) == 30
+    cfg, defaults, base = config
+    cfg['report']['celltype_colors'] = {'A': '#123456', 'B': '#123456'}
+    with pytest.raises(ValueError, match='duplicate colors'):
+        prepare_config(cfg, defaults, base)

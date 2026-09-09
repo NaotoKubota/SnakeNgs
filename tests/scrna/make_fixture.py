@@ -30,7 +30,9 @@ def make_fixture(out, train_model=False):
     cfg['celltypist'].update(model='synthetic_test_only.pkl', model_path=str(out / 'toy.pkl'),
                             min_model_genes=10, seed_probability=.5, seed_margin=.05, majority_voting=False)
     cfg['scanvi'].update(min_seed_cells=5, max_epochs=2, n_samples_per_label=10,
-                         posterior_samples=3, composition_draws=50)
+                         posterior_samples=3, composition_draws=50,
+                         min_probability=0, max_normalized_entropy=1)
+    cfg['annotation']['major_celltype_map'] = {'TypeA': 'MajorA', 'TypeB': 'MajorB'}
     cfg['resources'].update(analysis_threads=1, analysis_mem_mb=4000)
     cfg['report'].update(title='Synthetic smoke test <not biological data>', dpi=100,
                          markers={'A': ['Gene0', 'Gene1'], 'B': ['Gene20', 'Gene21']})

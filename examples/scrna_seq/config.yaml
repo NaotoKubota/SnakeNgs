@@ -108,6 +108,33 @@ scanvi:
   max_normalized_entropy: 0.5
   composition_draws: 500         # label-imputation intervals, not biological CIs
 
+annotation:
+  # Map CellTypist/scANVI subtypes to dataset-appropriate major classes.
+  # Unlisted subtypes use unmapped_major_celltype and are reported for review.
+  unmapped_major_celltype: Other
+  major_celltype_map:
+    Astro: Astrocyte
+    Car3: Inhibitory neuron
+    Endo: Vascular
+    L2/3 IT CTX: Excitatory neuron
+    L2/3 IT PPP: Excitatory neuron
+    L4/5 IT CTX: Excitatory neuron
+    L5 IT CTX: Excitatory neuron
+    L5 PT CTX: Excitatory neuron
+    L5/6 NP CTX: Excitatory neuron
+    L6 CT CTX: Excitatory neuron
+    L6 IT CTX: Excitatory neuron
+    L6b CTX: Excitatory neuron
+    Lamp5: Inhibitory neuron
+    Micro-PVM: Immune
+    Oligo: Oligodendrocyte
+    Pvalb: Inhibitory neuron
+    SMC-Peri: Vascular
+    Sncg: Inhibitory neuron
+    Sst: Inhibitory neuron
+    Sst Chodl: Inhibitory neuron
+    Vip: Inhibitory neuron
+
 report:
   title: sc/snRNA-seq primary analysis
   font_family: Arial
@@ -116,7 +143,15 @@ report:
   width_mm: 180
   point_size: 1.0
   palette: ['#0072B2', '#E69F00', '#009E73', '#CC79A7', '#56B4E9', '#D55E00', '#F0E442', '#000000']
-  celltype_colors: {}
+  celltype_colors: {}             # optional unique colors for subtype labels
+  major_celltype_colors:          # optional unique colors for major labels
+    Excitatory neuron: '#0072B2'
+    Inhibitory neuron: '#D55E00'
+    Astrocyte: '#009E73'
+    Oligodendrocyte: '#56B4E9'
+    Immune: '#CC79A7'
+    Vascular: '#E69F00'
+    Other: '#000000'
   markers:                       # adapt to model, species, and tissue
     Exc: [Slc17a7, Camk2a]
     Inh: [Gad1, Gad2]

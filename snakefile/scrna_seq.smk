@@ -41,6 +41,7 @@ rule all:
         'report/report.html',
         'analysis/final.h5ad',
         'analysis/composition.tsv',
+        'analysis/composition_major.tsv',
         'analysis/cells.tsv.gz'
     container: C['analysis']
 
@@ -257,6 +258,7 @@ rule scanvi:
         adata='analysis/final.h5ad',
         model=directory('models/scanvi'),
         composition='analysis/composition.tsv',
+        composition_major='analysis/composition_major.tsv',
         cells='analysis/cells.tsv.gz',
         history='analysis/scanvi_history.tsv',
         summary='analysis/scanvi.json'
@@ -272,6 +274,7 @@ rule report:
     input:
         adata='analysis/final.h5ad',
         composition='analysis/composition.tsv',
+        composition_major='analysis/composition_major.tsv',
         depth='analysis/depth.tsv',
         qc=expand('qc/{sample}/summary.json', sample=SAMPLES),
         qc_cells=expand('qc/{sample}/cells.tsv.gz', sample=SAMPLES),

@@ -12,7 +12,7 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from matplotlib import font_manager
 from core import aggregate_symbols
-from report_utils import design_notes, embedded_file, table
+from report_utils import design_notes, distinct_colors, embedded_file, table
 from runtime import logged
 
 
@@ -35,10 +35,12 @@ def run(sm):
     sections = []
     figures = []
     palette = r['palette']
-    sample_colors = {s: palette[i % len(palette)] for i, s in enumerate(sm.params.samples)}
+    sample_colors = distinct_colors(sm.params.samples, palette)
     celltypes = sorted(a.obs['cell_type'].astype(str).unique())
-    cell_colors = {s: r['celltype_colors'].get(s, palette[i % len(palette)]) for i, s in enumerate(celltypes)}
-    cell_colors[cfg['scanvi']['unlabeled_category']] = '#999999'
+    major_celltypes = sorted(a.obs['major_cell_type'].astype(str).unique())
+    unknown = cfg['scanvi']['unlabeled_category']
+    cell_colors = distinct_colors(celltypes, palette, r['celltype_colors'], {unknown: '#999999'})
+    major_colors = distinct_colors(major_celltypes, palette, r['major_celltype_colors'], {unknown: '#999999'})
     rng = np.random.default_rng(cfg['seed'])
     chosen = rng.choice(a.n_obs, min(a.n_obs, r['max_plot_cells']), replace=False)
 
@@ -57,24 +59,45 @@ def run(sm):
             for ext, mime in [('png', 'image/png'), ('svg', 'image/svg+xml'), ('pdf', 'application/pdf')])
         return f'<figure><img alt="{html.escape(caption, quote=True)}" src="data:image/png;base64,{png}"><figcaption>{html.escape(caption)} · {downloads}</figcaption></figure>'
 
-    def umap(ax, embedding, key, title):
+    def umap(ax, embedding, key, title, colors=None):
         points = a.obsm[embedding][chosen]
         labels = a.obs[key].astype(str).to_numpy()[chosen]
         names = sorted(a.obs[key].astype(str).unique())
-        colors = sample_colors if key == 'sample' else cell_colors if key == 'cell_type' else {s: palette[i % len(palette)] for i, s in enumerate(names)}
+        colors = colors or (sample_colors if key == 'sample' else distinct_colors(names, palette))
         for name in names:
             keep = labels == name
             ax.scatter(points[keep, 0], points[keep, 1], s=r['point_size'], color=colors[name], label=name, linewidths=0, rasterized=True)
         ax.set(title=title, xlabel='UMAP 1', ylabel='UMAP 2', xticks=[], yticks=[])
         ax.legend(loc='upper left', bbox_to_anchor=(1.01, 1), frameon=False, markerscale=3)
 
+    def stacked_composition(ax, frame, colors, title):
+        samples = list(sm.params.samples)
+        labels = sorted(frame['cell_type'].astype(str).unique())
+        pivot = frame.pivot(index='sample', columns='cell_type', values='expected_fraction').reindex(samples).fillna(0)
+        bottom = np.zeros(len(samples))
+        for label in labels:
+            values = pivot[label].to_numpy() if label in pivot else np.zeros(len(samples))
+            ax.bar(np.arange(len(samples)), values, bottom=bottom, color=colors[label],
+                   label=label, width=.75, linewidth=0)
+            bottom += values
+        if not np.allclose(bottom, 1, atol=1e-5):
+            raise ValueError(f'{title}: composition fractions do not sum to one')
+        ax.set(xticks=np.arange(len(samples)), xticklabels=samples, ylabel='Expected cell fraction',
+               ylim=(0, 1), title=title)
+        ax.tick_params(axis='x', rotation=90)
+        ax.legend(loc='upper left', bbox_to_anchor=(1.01, 1), frameon=False)
+
     qc = pd.DataFrame([json.loads(Path(p).read_text()) for p in sm.input.qc])
     summaries = [json.loads(Path(p).read_text()) for p in sm.input.summaries]
     notes = design_notes(a.obs, cfg['integration']['batch_key'])
     if actual != requested:
         notes.append(f'The requested font, {requested}, was unavailable; {actual} was used instead.')
-    if len(celltypes) > len(palette):
-        notes.append('The number of cell types exceeds the default palette size. Set celltype_colors or split cell types into separate panels for publication.')
+    source_key = 'scanvi_label' if 'scanvi_label' in a.obs else 'celltypist_majority'
+    unmapped = sorted(set(a.obs[source_key].astype(str))
+                      - set(cfg['annotation']['major_celltype_map']) - {unknown})
+    if unmapped:
+        notes.append('Subtypes without an explicit major-cell-type mapping were assigned to '
+                     f'{cfg["annotation"]["unmapped_major_celltype"]}: {", ".join(unmapped)}.')
     if (qc['mt_genes_found'] == 0).any():
         notes.append('No mitochondrial genes were identified in some samples. Check the gene symbols and mt_regex setting.')
     note_html = '<ul>' + ''.join(f'<li>{html.escape(n)}</li>' for n in notes) + '</ul>' if notes else ''
@@ -147,18 +170,22 @@ def run(sm):
     if axes[1].get_legend_handles_labels()[0]: axes[1].legend(frameon=False)
     add('Integration diagnostics', 'Neighbor batch entropy ranges from 0 for separation to 1 for equal mixing across batches. Its expected value depends on batch proportions and cell-type composition. Training curves diagnose convergence; they do not measure accuracy on independent validation data.', save(fig, 'integration_diagnostics', 'Neighbor entropy and training traces'))
 
-    fig, axes = plt.subplots(1, 2, figsize=(width, 3.3))
+    fig, axes = plt.subplots(1, 2, figsize=(width, 3.5))
     embedding = 'X_umap_scANVI' if cfg['scanvi']['enabled'] else 'X_umap_scVI'
-    umap(axes[0], embedding, 'cell_type', 'Final cell type')
+    umap(axes[0], embedding, 'cell_type', 'Final subtype', cell_colors)
+    umap(axes[1], embedding, 'major_cell_type', 'Final major cell type', major_colors)
+    annotation_body = save(fig, 'annotation', 'Final subtype and major-cell-type annotations')
     if 'scanvi_normalized_entropy' in a.obs:
-        scatter = axes[1].scatter(a.obsm[embedding][chosen, 0], a.obsm[embedding][chosen, 1],
+        fig, ax = plt.subplots(figsize=(width * .55, 3.1))
+        scatter = ax.scatter(a.obsm[embedding][chosen, 0], a.obsm[embedding][chosen, 1],
             c=a.obs['scanvi_normalized_entropy'].to_numpy()[chosen], s=r['point_size'],
             cmap='cividis', vmin=0, vmax=1, linewidths=0, rasterized=True)
-        fig.colorbar(scatter, ax=axes[1], label='Normalized label entropy')
-        axes[1].set(title='scANVI uncertainty', xlabel='UMAP 1', ylabel='UMAP 2', xticks=[], yticks=[])
+        fig.colorbar(scatter, ax=ax, label='Normalized label entropy')
+        ax.set(title='scANVI uncertainty', xlabel='UMAP 1', ylabel='UMAP 2', xticks=[], yticks=[])
+        annotation_body += save(fig, 'annotation_uncertainty', 'scANVI label uncertainty')
     else:
-        axes[1].text(.5, .5, 'scANVI disabled', ha='center'); axes[1].axis('off')
-    add('Cell types and uncertainty', 'When enabled, scANVI is trained using sufficiently supported, high-confidence CellTypist labels as seeds. Repeated latent-variable draws yield class probabilities, standard deviations, and entropy. Cells that fail the confidence thresholds receive the configured unknown label. These probabilities do not necessarily detect reference-model errors or cell types absent from training.', save(fig, 'annotation', 'Final annotation and label uncertainty'))
+        annotation_body += '<p>scANVI uncertainty is unavailable because scANVI is disabled.</p>'
+    add('Cell types and uncertainty', 'Subtype labels are mapped to configurable major cell types. When enabled, scANVI is trained using sufficiently supported, high-confidence CellTypist labels as seeds. Repeated latent-variable draws yield class probabilities, standard deviations, and entropy. Cells that fail the confidence thresholds receive the configured unknown label. These probabilities do not necessarily detect reference-model errors or cell types absent from training.', annotation_body)
     if cfg['scanvi']['enabled']:
         fig, axes = plt.subplots(1, 2, figsize=(width, 2.7))
         axes[0].hist(a.obs['scanvi_max_probability'], bins=40, color='#0072B2')
@@ -187,22 +214,22 @@ def run(sm):
         add('Marker expression', 'Configured markers are displayed by cell type using normalized expression from the selected count layer. These values are not scVI-derived corrected expression estimates.', save(fig, 'markers', 'Marker expression by final cell type'))
 
     composition = pd.read_csv(sm.input.composition, sep='\t')
+    composition_major = pd.read_csv(sm.input.composition_major, sep='\t')
     fig, ax = plt.subplots(figsize=(width, 3))
-    samples = list(sm.params.samples)
-    ctypes = sorted(composition['cell_type'].unique())
-    positions = np.arange(len(samples))
-    for i, label in enumerate(ctypes):
-        sub = composition[composition['cell_type'] == label].set_index('sample').reindex(samples)
-        offset = (i - (len(ctypes) - 1) / 2) * .7 / max(1, len(ctypes))
-        means = sub['expected_fraction'].to_numpy()
-        color = cell_colors.get(label, palette[i % len(palette)])
-        ax.scatter(positions + offset, means, color=color, label=label, s=12)
-        if sub['label_interval_low'].notna().any():
-            # Quantiles need not straddle the expectation for finite discrete draws.
-            ax.vlines(positions + offset, sub['label_interval_low'], sub['label_interval_high'], colors=color, linewidth=.8)
-    ax.set(xticks=positions, xticklabels=samples, ylabel='Cell fraction', ylim=(0, 1)); ax.tick_params(axis='x', rotation=90)
-    ax.legend(loc='upper left', bbox_to_anchor=(1.01, 1), frameon=False)
-    add('Propagation of uncertainty to cell composition', 'Expected cell counts and fractions are calculated by summing scANVI probabilities. Repeated probabilistic label assignments provide 95% intervals. All probability mass is included, including cells displayed as unknown. These intervals describe label uncertainty conditional on the observed cells and fitted model; they are not biological confidence intervals and exclude donor variation, sampling variation, and SoupX estimation error. When scANVI is disabled, only hard counts are reported.', save(fig, 'composition', 'Expected composition and conditional label-imputation intervals') + table(composition) + embedded_file(sm.input.composition, 'Download composition TSV', 'text/tab-separated-values'))
+    subtype_composition_colors = distinct_colors(
+        sorted(composition['cell_type'].astype(str).unique()), palette, r['celltype_colors'])
+    stacked_composition(ax, composition, subtype_composition_colors, 'Subtype composition')
+    composition_body = save(fig, 'composition_subtype', 'Expected subtype composition by sample')
+    fig, ax = plt.subplots(figsize=(width, 3))
+    major_composition_colors = distinct_colors(
+        sorted(composition_major['cell_type'].astype(str).unique()), palette, r['major_celltype_colors'])
+    stacked_composition(ax, composition_major, major_composition_colors, 'Major cell-type composition')
+    composition_body += save(fig, 'composition_major', 'Expected major cell-type composition by sample')
+    composition_body += '<h3>Subtype composition and uncertainty</h3>' + table(composition)
+    composition_body += embedded_file(sm.input.composition, 'Download subtype composition TSV', 'text/tab-separated-values')
+    composition_body += '<h3>Major cell-type composition and uncertainty</h3>' + table(composition_major)
+    composition_body += embedded_file(sm.input.composition_major, 'Download major cell-type composition TSV', 'text/tab-separated-values')
+    add('Propagation of uncertainty to cell composition', 'Stacked bars show expected fractions calculated by summing scANVI probabilities. Subtype probabilities are summed into mutually exclusive configured major cell types before calculating the major composition. Colors are unique within each plot. Repeated probabilistic label assignments provide 95% intervals in the accompanying tables. These intervals describe label uncertainty conditional on the observed cells and fitted model; they are not biological confidence intervals and exclude donor variation, sampling variation, and SoupX estimation error. When scANVI is disabled, only hard counts are reported.', composition_body)
 
     metrics_html = ''
     for sample, path in zip(sm.params.samples, sm.input.cr):

@@ -134,10 +134,10 @@ def aggregate_symbols(matrix, symbols):
     return (sparse.csr_matrix(matrix) @ mapping).tocsr(), pd.Index(names)
 
 
-def validate_probabilities(p):
+def validate_probabilities(p, min_classes=2):
     p = np.asarray(p, dtype=float)
-    if p.ndim != 2 or p.shape[1] < 2 or np.any(~np.isfinite(p)) or np.any(p < 0) or np.any(p > 1):
-        raise ValueError('Expected a finite cell-by-class probability matrix with at least two classes')
+    if p.ndim != 2 or p.shape[1] < min_classes or np.any(~np.isfinite(p)) or np.any(p < 0) or np.any(p > 1):
+        raise ValueError(f'Expected a finite cell-by-class probability matrix with at least {min_classes} classes')
     if not np.allclose(p.sum(axis=1), 1, atol=1e-5):
         raise ValueError('Class probabilities must sum to one')
     return p / p.sum(axis=1, keepdims=True)
@@ -154,7 +154,7 @@ def uncertainty(p):
 
 def composition_intervals(probabilities, obs, classes, draws, seed):
     """Independent conditional label draws; these intervals exclude donor variation."""
-    p = validate_probabilities(probabilities)
+    p = validate_probabilities(probabilities, min_classes=1)
     records = []
     for sample in sorted(obs['sample'].astype(str).unique()):
         rows = np.flatnonzero(obs['sample'].astype(str).to_numpy() == sample)
@@ -175,6 +175,24 @@ def composition_intervals(probabilities, obs, classes, draws, seed):
                             'label_interval_low': float(lo[k]), 'label_interval_high': float(hi[k]),
                             'interval_scope': 'conditional_label_uncertainty_only'})
     return pd.DataFrame(records)
+
+
+def map_major_cell_types(labels, mapping, default, unknown='Unknown'):
+    """Map subtype labels to major cell types while preserving the unknown label."""
+    return np.asarray([unknown if str(label) == unknown else mapping.get(str(label), default)
+                       for label in labels], dtype=str)
+
+
+def aggregate_class_probabilities(probabilities, classes, mapping, default):
+    """Collapse subtype probabilities into mutually exclusive major cell types."""
+    p = validate_probabilities(probabilities)
+    classes = np.asarray(classes, dtype=str)
+    if p.shape[1] != len(classes):
+        raise ValueError('Probability columns and class names differ in length')
+    mapped = np.asarray([mapping.get(label, default) for label in classes], dtype=str)
+    major_classes = np.asarray(sorted(set(mapped)), dtype=str)
+    major = np.column_stack([p[:, mapped == label].sum(axis=1) for label in major_classes])
+    return validate_probabilities(major, min_classes=1), major_classes
 
 
 def batch_entropy(representation, batches, k):

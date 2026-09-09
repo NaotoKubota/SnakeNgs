@@ -155,6 +155,7 @@ The main configuration groups are:
 | `integration.*` | Configure batch keys, covariates, HVGs, latent dimensions, training epochs, neighbors, and CPU/GPU execution. |
 | `celltypist.*` | Select the model by name or path and configure its checksum, majority voting, and seed-label thresholds. |
 | `scanvi.*` | Configure seed-cell requirements, training epochs, posterior sampling, `Unknown` thresholds, and composition draws. |
+| `annotation.*` | Map CellTypist/scANVI subtypes to configurable major cell types and select the fallback for unmapped subtypes. |
 | `report.*` | Configure the title, fonts, dimensions, resolution, palette, cell-type colors, and marker genes. |
 | `resources.*` | Configure threads, memory in MB, and GPU count for mapping, preprocessing, modeling, and reporting. |
 
@@ -227,6 +228,8 @@ After scANVI training, repeated posterior predictions are used to store class-wi
 
 The composition table sums class probabilities to calculate expected cell counts, including the probability mass of cells displayed as `Unknown`. Its 2.5th and 97.5th percentiles quantify label uncertainty conditional on the observed cells and fitted model. They do not represent biological replicate variation, mapping uncertainty, SoupX uncertainty, reference-model misclassification, unknown cell types, or posterior uncertainty in model weights, and should not be interpreted as confidence intervals or p-values for biological group comparisons.
 
+Define `annotation.major_celltype_map` for the CellTypist model and tissue being analyzed. The workflow stores both `cell_type` (subtype) and `major_cell_type` in the final AnnData object. Subtypes absent from the mapping are assigned to `annotation.unmapped_major_celltype` and listed in the report for review. The annotation section shows separate subtype and major-cell-type UMAPs. Composition is shown as stacked bars at both levels; every category receives a unique color within its plot. Optional colors can be specified with `report.celltype_colors` and `report.major_celltype_colors`.
+
 ## Output
 
 | Path under `workdir` | Description |
@@ -239,6 +242,7 @@ The composition table sums class probabilities to calculate expected cell counts
 | `analysis/depth.tsv` | Depth-matching targets, probabilities, observed medians, and zero-cell counts. |
 | `analysis/empty_after_correction.tsv` | Cells removed because they contained zero UMIs after SoupX or depth matching. |
 | `analysis/composition.tsv` | Hard and expected counts, fractions, and conditional uncertainty intervals by sample. |
+| `analysis/composition_major.tsv` | The corresponding composition and uncertainty table after summing subtype probabilities into major cell types. |
 | `models/scvi/`, `models/scanvi/` | Saved models. Ordered HVG names are stored in `uns['scvi_hvg_names']`. |
 | `models/celltypist.json` | CellTypist model identity and SHA256 checksum. |
 | `provenance/`, `logs/`, `benchmarks/` | Resolved configuration, source hashes, software versions, logs, and resource measurements. |
