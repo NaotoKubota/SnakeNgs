@@ -136,8 +136,13 @@ def aggregate_symbols(matrix, symbols):
 
 def validate_probabilities(p, min_classes=2):
     p = np.asarray(p, dtype=float)
-    if p.ndim != 2 or p.shape[1] < min_classes or np.any(~np.isfinite(p)) or np.any(p < 0) or np.any(p > 1):
+    # Float32 class aggregation can exceed [0, 1] by a few ulps. Accept only
+    # numerical round-off, clip it, and continue to enforce row normalization.
+    tolerance = 1e-6
+    if (p.ndim != 2 or p.shape[1] < min_classes or np.any(~np.isfinite(p))
+            or np.any(p < -tolerance) or np.any(p > 1 + tolerance)):
         raise ValueError(f'Expected a finite cell-by-class probability matrix with at least {min_classes} classes')
+    p = np.clip(p, 0, 1)
     if not np.allclose(p.sum(axis=1), 1, atol=1e-5):
         raise ValueError('Class probabilities must sum to one')
     return p / p.sum(axis=1, keepdims=True)

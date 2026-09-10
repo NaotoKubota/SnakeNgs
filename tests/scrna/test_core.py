@@ -6,7 +6,7 @@ from scipy import sparse
 from core import (aggregate_class_probabilities, aggregate_symbols, assign_global_cell_ids, batch_entropy,
                   called_count_reconciliation, composition_intervals, depth_match,
                   integer_counts, mad_flags, map_major_cell_types, sample_seed,
-                  thin_counts, uncertainty)
+                  thin_counts, uncertainty, validate_probabilities)
 
 
 @pytest.mark.parametrize('bad', [[[-1, 2]], [[np.nan, 2]], [[.3, 1]], [[np.inf, 0]]])
@@ -100,7 +100,7 @@ def test_entropy_and_intervals_keep_uncertain_probability_mass():
 
 
 def test_major_cell_types_preserve_unknown_and_probability_mass():
-    p = np.array([[.2, .3, .5], [.7, .2, .1]])
+    p = np.array([[.2, .3, .5], [.7, .2, .1]], dtype=np.float32)
     major, classes = aggregate_class_probabilities(
         p, ['Exc1', 'Exc2', 'Astro'], {'Exc1': 'Neuron', 'Exc2': 'Neuron', 'Astro': 'Glia'}, 'Other')
     assert list(classes) == ['Glia', 'Neuron']
@@ -108,6 +108,8 @@ def test_major_cell_types_preserve_unknown_and_probability_mass():
     np.testing.assert_allclose(major.sum(axis=1), 1)
     assert list(map_major_cell_types(
         ['Exc1', 'Unmapped', 'Unknown'], {'Exc1': 'Neuron'}, 'Other')) == ['Neuron', 'Other', 'Unknown']
+    rounded = validate_probabilities(np.array([[1.0000001, 0]], dtype=np.float32))
+    np.testing.assert_allclose(rounded, [[1, 0]])
 
 
 def test_mad_ties_and_neighbor_entropy_single_batch():

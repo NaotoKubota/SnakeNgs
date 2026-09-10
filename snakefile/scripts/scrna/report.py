@@ -85,7 +85,8 @@ def run(sm):
         ax.set(xticks=np.arange(len(samples)), xticklabels=samples, ylabel='Expected cell fraction',
                ylim=(0, 1), title=title)
         ax.tick_params(axis='x', rotation=90)
-        ax.legend(loc='upper left', bbox_to_anchor=(1.01, 1), frameon=False)
+        ax.legend(loc='upper left', bbox_to_anchor=(1.01, 1), frameon=False,
+                  ncol=2 if len(labels) > 12 else 1, columnspacing=.8, handletextpad=.4)
 
     qc = pd.DataFrame([json.loads(Path(p).read_text()) for p in sm.input.qc])
     summaries = [json.loads(Path(p).read_text()) for p in sm.input.summaries]
