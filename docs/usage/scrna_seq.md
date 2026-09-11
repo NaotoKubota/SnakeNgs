@@ -4,7 +4,7 @@ Snakemake workflow for end-to-end primary analysis of droplet-based single-cell 
 
 !!! note
 
-    Please make sure that [Singularity](https://sylabs.io/guides/3.7/user-guide/quick_start.html) or [Apptainer](https://apptainer.org/docs/user/latest/) and Snakemake 8.30 or later are installed, and that the [SnakeNgs](https://github.com/NaotoKubota/SnakeNgs) repository has been cloned. A reference FASTA, GTF, and the required indexes must also be available.
+    Please make sure that [Singularity](https://sylabs.io/guides/3.7/user-guide/quick_start.html) or [Apptainer](https://apptainer.org/docs/user/latest/) and Snakemake 8.30 or later are installed, and that the [SnakeNgs](https://github.com/Sika-Zheng-Lab/SnakeNgs) repository has been cloned. A reference FASTA, GTF, and the required indexes must also be available.
 
     The workflow currently supports paired FASTQ files from 10x droplet-based assays. Plate-based assays, multiome assays, antibody capture, and multiplex demultiplexing are outside its current scope.
 
@@ -86,7 +86,7 @@ Relative paths are resolved from the directory in which Snakemake is launched be
 
 ### Configuration file
 
-`config.yaml` should contain the following sections. See [`examples/scrna_seq/config.yaml`](https://github.com/NaotoKubota/SnakeNgs/blob/develop/examples/scrna_seq/config.yaml) for a complete configuration.
+`config.yaml` should contain the following sections. See [`examples/scrna_seq/config.yaml`](https://github.com/Sika-Zheng-Lab/SnakeNgs/blob/develop/examples/scrna_seq/config.yaml) for a complete configuration.
 
 ``` yaml
 workdir: /path/to/output

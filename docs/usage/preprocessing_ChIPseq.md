@@ -4,14 +4,14 @@ Snakemake workflow for preprocessing **paired-end** and **single-end** ChIP-seq/
 
 !!! note
 
-    Please make sure that you have [Singularity](https://sylabs.io/guides/3.7/user-guide/quick_start.html) and [Snakemake](https://snakemake.readthedocs.io/en/stable/) installed on your system and cloned the [SnakeNgs](https://github.com/NaotoKubota/SnakeNgs) repository.
+    Please make sure that you have [Singularity](https://sylabs.io/guides/3.7/user-guide/quick_start.html) and [Snakemake](https://snakemake.readthedocs.io/en/stable/) installed on your system and cloned the [SnakeNgs](https://github.com/Sika-Zheng-Lab/SnakeNgs) repository.
 
 ## Workflow
 
 ### Paired-end (`layout: "paired"`)
 
 <figure markdown="span">
-	![preprocessing_ChIPseq.smk rulegraph](https://github.com/NaotoKubota/SnakeNgs/blob/develop/img/preprocessing_ChIPseq_rulegraph.svg?raw=true){ width="1000" align="center" }
+	![preprocessing_ChIPseq.smk rulegraph](https://github.com/Sika-Zheng-Lab/SnakeNgs/blob/develop/img/preprocessing_ChIPseq_rulegraph.svg?raw=true){ width="1000" align="center" }
 </figure>
 
 <span style="font-size: 0.8em; color: rgba(0, 0, 0, 0.4);">The rulegraph was created by [snakevision](https://github.com/OpenOmics/snakevision).</span>
@@ -28,7 +28,7 @@ Snakemake workflow for preprocessing **paired-end** and **single-end** ChIP-seq/
 ### Single-end (`layout: "single"`)
 
 <figure markdown="span">
-	![preprocessing_ChIPseq_single.smk rulegraph](https://github.com/NaotoKubota/SnakeNgs/blob/develop/img/preprocessing_ChIPseq_single_rulegraph.svg?raw=true){ width="1000" align="center" }
+	![preprocessing_ChIPseq_single.smk rulegraph](https://github.com/Sika-Zheng-Lab/SnakeNgs/blob/develop/img/preprocessing_ChIPseq_single_rulegraph.svg?raw=true){ width="1000" align="center" }
 </figure>
 
 <span style="font-size: 0.8em; color: rgba(0, 0, 0, 0.4);">The rulegraph was created by [snakevision](https://github.com/OpenOmics/snakevision).</span>

@@ -4,12 +4,12 @@ Snakemake workflow for file format conversion from BAM to CRAM to compress the f
 
 !!! note
 
-    Please make sure that you have [Singularity](https://sylabs.io/guides/3.7/user-guide/quick_start.html) and [Snakemake](https://snakemake.readthedocs.io/en/stable/) installed on your system and cloned the [SnakeNgs](https://github.com/NaotoKubota/SnakeNgs) repository.
+    Please make sure that you have [Singularity](https://sylabs.io/guides/3.7/user-guide/quick_start.html) and [Snakemake](https://snakemake.readthedocs.io/en/stable/) installed on your system and cloned the [SnakeNgs](https://github.com/Sika-Zheng-Lab/SnakeNgs) repository.
 
 ## Workflow
 
 <figure markdown="span">
-	![bam2cram.smk rulegraph](https://github.com/NaotoKubota/SnakeNgs/blob/develop/img/bam2cram_rulegraph.svg?raw=true){ width="1000" align="center" }
+	![bam2cram.smk rulegraph](https://github.com/Sika-Zheng-Lab/SnakeNgs/blob/develop/img/bam2cram_rulegraph.svg?raw=true){ width="1000" align="center" }
 </figure>
 
 <span style="font-size: 0.8em; color: rgba(0, 0, 0, 0.4);">The rulegraph was created by [snakevision](https://github.com/OpenOmics/snakevision).</span>

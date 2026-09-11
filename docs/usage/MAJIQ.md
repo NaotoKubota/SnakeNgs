@@ -4,12 +4,12 @@ Snakemake workflow for differential RNA splicing analysis using [MAJIQ](https://
 
 !!! note
 
-    Please make sure that you have [Singularity](https://sylabs.io/guides/3.7/user-guide/quick_start.html) and [Snakemake](https://snakemake.readthedocs.io/en/stable/) installed on your system and cloned the [SnakeNgs](https://github.com/NaotoKubota/SnakeNgs) repository.
+    Please make sure that you have [Singularity](https://sylabs.io/guides/3.7/user-guide/quick_start.html) and [Snakemake](https://snakemake.readthedocs.io/en/stable/) installed on your system and cloned the [SnakeNgs](https://github.com/Sika-Zheng-Lab/SnakeNgs) repository.
 
 ## Workflow
 
 <figure markdown="span">
-	![MAJIQ.smk rulegraph](https://github.com/NaotoKubota/SnakeNgs/blob/develop/img/MAJIQ_rulegraph.svg?raw=true){ width="1000" align="center" }
+	![MAJIQ.smk rulegraph](https://github.com/Sika-Zheng-Lab/SnakeNgs/blob/develop/img/MAJIQ_rulegraph.svg?raw=true){ width="1000" align="center" }
 </figure>
 
 <span style="font-size: 0.8em; color: rgba(0, 0, 0, 0.4);">The rulegraph was created by [snakevision](https://github.com/OpenOmics/snakevision).</span>
@@ -48,7 +48,7 @@ strandness: None # [None, forward, reverse]
 
 	As of now, there is no public Docker/Singularity image available for MAJIQ. You need to build the image by yourself. Please refer to the [MAJIQ installation guide](https://majiq.biociphers.org/app_download/) for more information.
 
-- `/path/to/experiment_table.tsv` is a tab-separated file, which is same as the one used in [Shiba](https://github.com/NaotoKubota/Shiba).
+- `/path/to/experiment_table.tsv` is a tab-separated file, which is same as the one used in [Shiba](https://github.com/Sika-Zheng-Lab/Shiba).
 
 ``` text
 sample	bam	group

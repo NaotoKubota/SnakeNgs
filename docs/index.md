@@ -10,7 +10,7 @@ Pipelines for NGS data analysis written in [Snakemake](https://snakemake.readthe
 
 ``` bash
 # Clone the repository
-git clone https://github.com/NaotoKubota/SnakeNgs.git
+git clone https://github.com/Sika-Zheng-Lab/SnakeNgs.git
 
 # Run the pipeline
 snakemake -s /path/to/SnakeNgs/snakefile/preprocessing_RNAseq.smk \

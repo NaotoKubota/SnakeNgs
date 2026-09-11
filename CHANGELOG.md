@@ -59,7 +59,7 @@ All notable changes to this SnakeNgs project will be documented in this file.
 
 ### Deprecated
 
-- `ngsFetch` is deprecated and will be removed in the next version. Please use [ngsfetch](https://github.com/NaotoKubota/ngsfetch) instead.
+- `ngsFetch` is deprecated and will be removed in the next version. Please use [ngsfetch](https://github.com/Sika-Zheng-Lab/ngsfetch) instead.
 
 ## [v0.3.0] - 2025-03-07
 

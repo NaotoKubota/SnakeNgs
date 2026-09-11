@@ -4,12 +4,12 @@ Snakemake workflow for differential RNA splicing analysis using [rMATS](http://r
 
 !!! note
 
-    Please make sure that you have [Singularity](https://sylabs.io/guides/3.7/user-guide/quick_start.html) and [Snakemake](https://snakemake.readthedocs.io/en/stable/) installed on your system and cloned the [SnakeNgs](https://github.com/NaotoKubota/SnakeNgs) repository.
+    Please make sure that you have [Singularity](https://sylabs.io/guides/3.7/user-guide/quick_start.html) and [Snakemake](https://snakemake.readthedocs.io/en/stable/) installed on your system and cloned the [SnakeNgs](https://github.com/Sika-Zheng-Lab/SnakeNgs) repository.
 
 ## Workflow
 
 <figure markdown="span">
-	![rMATS.smk rulegraph](https://github.com/NaotoKubota/SnakeNgs/blob/develop/img/rMATS_rulegraph.svg?raw=true){ width="1000" align="center" }
+	![rMATS.smk rulegraph](https://github.com/Sika-Zheng-Lab/SnakeNgs/blob/develop/img/rMATS_rulegraph.svg?raw=true){ width="1000" align="center" }
 </figure>
 
 <span style="font-size: 0.8em; color: rgba(0, 0, 0, 0.4);">The rulegraph was created by [snakevision](https://github.com/OpenOmics/snakevision).</span>
@@ -44,7 +44,7 @@ mel: 10000 # Maximum exon length
 ```
 
 - `/path/to/output` is the directory where the output files will be saved.
-- `/path/to/experiment_table.tsv` is a tab-separated file, which is same as the one used in [Shiba](https://github.com/NaotoKubota/Shiba).
+- `/path/to/experiment_table.tsv` is a tab-separated file, which is same as the one used in [Shiba](https://github.com/Sika-Zheng-Lab/Shiba).
 
 ``` text
 sample	bam	group

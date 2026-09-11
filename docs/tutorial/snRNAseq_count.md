@@ -15,8 +15,8 @@ By the end of this tutorial, you will have:
 
     - [Singularity](https://sylabs.io/guides/3.7/user-guide/quick_start.html) (≥ 3.7)
     - [Snakemake](https://snakemake.readthedocs.io/en/stable/) (≥ 7.0)
-    - [SnakeNgs](https://github.com/NaotoKubota/SnakeNgs) repository cloned locally
-    - [ngsfetch](https://github.com/NaotoKubota/ngsfetch) for downloading FASTQ files
+    - [SnakeNgs](https://github.com/Sika-Zheng-Lab/SnakeNgs) repository cloned locally
+    - [ngsfetch](https://github.com/Sika-Zheng-Lab/ngsfetch) for downloading FASTQ files
     - ~20 GB of free disk space (for reference genome and output files)
 
 ## 1. Download example data
@@ -30,7 +30,7 @@ In this tutorial, we use two samples from a study on nonsense-mediated mRNA deca
 
 Each sample was sequenced across two lanes on an Illumina NovaSeq X Plus.
 
-Download the FASTQ files using [ngsfetch](https://github.com/NaotoKubota/ngsfetch):
+Download the FASTQ files using [ngsfetch](https://github.com/Sika-Zheng-Lab/ngsfetch):
 
 ``` bash
 # Create working directory

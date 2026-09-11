@@ -16,13 +16,13 @@ By the end of this tutorial, you will have:
 
     - [Singularity](https://sylabs.io/guides/3.7/user-guide/quick_start.html) (≥ 3.7)
     - [Snakemake](https://snakemake.readthedocs.io/en/stable/) (≥ 7.0)
-    - [SnakeNgs](https://github.com/NaotoKubota/SnakeNgs) repository cloned locally
-    - [ngsfetch](https://github.com/NaotoKubota/ngsfetch) for downloading FASTQ files
+    - [SnakeNgs](https://github.com/Sika-Zheng-Lab/SnakeNgs) repository cloned locally
+    - [ngsfetch](https://github.com/Sika-Zheng-Lab/ngsfetch) for downloading FASTQ files
     - ~20 GB of free disk space (for reference genome, Bowtie2 index, and output files)
 
 ## 1. Download example data
 
-In this tutorial, we use three human ChIP-seq samples from a K562 cell line study ([PRJEB72776](https://www.ncbi.nlm.nih.gov/bioproject/PRJEB72776)): two target ChIP samples (H3K4me3 and H3K27ac) sharing one input control. We download paired-end FASTQ files using [ngsfetch](https://github.com/NaotoKubota/ngsfetch).
+In this tutorial, we use three human ChIP-seq samples from a K562 cell line study ([PRJEB72776](https://www.ncbi.nlm.nih.gov/bioproject/PRJEB72776)): two target ChIP samples (H3K4me3 and H3K27ac) sharing one input control. We download paired-end FASTQ files using [ngsfetch](https://github.com/Sika-Zheng-Lab/ngsfetch).
 
 | Accession | Sample | Type | Instrument | Layout | Read length | Download size |
 |-----------|--------|------|------------|--------|-------------|---------------|

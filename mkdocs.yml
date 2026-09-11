@@ -3,8 +3,8 @@ site_description: Snakemake Pipeline for NGS data
 site_author: Naoto Kubota
 site_url: https://naotokubota.github.io/SnakeNgs/
 copyright: © 2024 Naoto Kubota
-repo_url: https://github.com/NaotoKubota/SnakeNgs
-repo_name: NaotoKubota/SnakeNgs
+repo_url: https://github.com/Sika-Zheng-Lab/SnakeNgs
+repo_name: Sika-Zheng-Lab/SnakeNgs
 
 theme:
   name: material
@@ -65,7 +65,7 @@ markdown_extensions:
 extra:
   social:
     - icon: fontawesome/brands/github
-      link: "https://github.com/NaotoKubota"
+      link: "https://github.com/Sika-Zheng-Lab"
     - icon: fontawesome/brands/docker
       link: "https://hub.docker.com/u/naotokubota"
     - icon: fontawesome/brands/x-twitter

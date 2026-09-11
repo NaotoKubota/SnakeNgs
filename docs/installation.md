@@ -20,5 +20,5 @@ You can pull the GitHub repository containing all the pipelines by running the f
 
 ``` bash
 # Clone the repository
-git clone https://github.com/NaotoKubota/SnakeNgs
+git clone https://github.com/Sika-Zheng-Lab/SnakeNgs
 ```
